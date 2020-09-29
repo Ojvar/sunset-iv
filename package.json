@@ -1,0 +1,31 @@
+{
+    "name": "sunset-iv",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "server-start": "cross-env node dist/core/bootstrap.js",
+        "server-build": "tsc && cross-env node dist/core/bootstrap.js",
+        "server-dev": "cross-env ts-node-dev --respawn -- ./src/core/bootstrap.ts"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "colors": "^1.4.0",
+        "express": "^4.17.1",
+        "laravel-mix": "^5.0.5",
+        "vue": "^3.0.0",
+        "winston": "^3.3.3"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.8",
+        "@types/node": "^14.11.2",
+        "@types/winston": "^2.4.4",
+        "nodemon": "^2.0.4",
+        "ora": "^5.1.0",
+        "ts-node": "^9.0.0",
+        "ts-node-dev": "^1.0.0-pre.63",
+        "typescript": "^4.0.3"
+    }
+}
