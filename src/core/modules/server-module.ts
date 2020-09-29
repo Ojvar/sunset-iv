@@ -27,6 +27,9 @@ export default class Server extends BaseModule {
      */
     private initLogger() {
         GlobalData.logger = new LoggerModule();
-        GlobalData.logger.info("Logger initialized");
+        GlobalData.logger.info("I - Logger initialized");
+        GlobalData.logger.error("E - Logger initialized");
+        GlobalData.logger.warning("W - Logger initialized");
+        GlobalData.logger.debug("D - Logger initialized");
     }
 }

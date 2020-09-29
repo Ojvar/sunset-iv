@@ -15,7 +15,7 @@ export default class Logger extends BaseModule {
     /**
      * Logger class ctr
      */
-    constructor(public logEngine: any = console) {
+    constructor(public logger: any = console) {
         super();
 
         this.setupVariables();
@@ -42,7 +42,7 @@ export default class Logger extends BaseModule {
 
         return colorizer.colorize(
             msg.level,
-            `${msg.timestamp} - ${msg.level}: ${msg.message}`
+            `[${msg.level}]\t${msg.timestamp}\n\t${msg.level}: ${msg.message}`
         );
     }
 
@@ -52,7 +52,7 @@ export default class Logger extends BaseModule {
      * @returns String
      */
     private rawPrintFnc(msg: Winston.Logform.TransformableInfo): string {
-        return `${msg.level}\t${msg.timestamp} - ${msg.level}: ${msg.message}`;
+        return `[${msg.level}]\t${msg.timestamp}\n\t${msg.level}: ${msg.message}`;
     }
 
     /**
@@ -79,7 +79,7 @@ export default class Logger extends BaseModule {
         });
 
         /* Print to console */
-        if (super.isProductionMode() === false) {
+        if (!GlobalMethods.isProductionMode()) {
             logger.add(
                 new Winston.transports.Console({
                     format: Winston.format.combine(
@@ -92,7 +92,7 @@ export default class Logger extends BaseModule {
         }
 
         /* Set logger engine */
-        this.logEngine = logger;
+        this.logger = logger;
     }
 
     /**
@@ -107,7 +107,11 @@ export default class Logger extends BaseModule {
         }
 
         /* Log message */
-        this.logEngine[type](log);
+        if (this.logger[type]) {
+            this.logger[type](log);
+        } else {
+            throw Error(`LOG-TYPE ${type} not found!`);
+        }
 
         return log;
     }
@@ -136,7 +140,7 @@ export default class Logger extends BaseModule {
      * @param tag String Log tag
      */
     public warning(log: string, tag?: string): string {
-        return this.log("warning", log, tag);
+        return this.log("warn", log, tag);
     }
 
     /**
