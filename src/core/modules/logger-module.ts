@@ -46,9 +46,9 @@ export default class Logger extends BaseModule implements CoreModuleInterface {
     private colorPrintFnc(msg: Winston.Logform.TransformableInfo): string {
         const colorizer: Winston.Logform.Colorizer = Winston.format.colorize();
 
-        return colorizer.colorize(
-            msg.level,
-            `[${msg.level}]\t${msg.timestamp}\n\t${msg.message}`
+        return (
+            colorizer.colorize(msg.level, `[${msg.level}]`) +
+            `\t${msg.timestamp}\n\t${msg.message}`
         );
     }
 

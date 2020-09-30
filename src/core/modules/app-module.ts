@@ -10,26 +10,22 @@ import GlobalData from "../global/global-data";
  */
 export default class Application extends BaseModule
     implements CoreModuleInterface {
+    private host: string = "127.0.0.1";
+    private port: number = 8585;
+    private useSsl: boolean = false;
+
     /**
      * Application-Class ctr
-     * @param port Number Port number
-     * @param host:127.0.0.1 String Host IP
      */
-    constructor(private port: number, private host: string = "127.0.0.1") {
+    constructor() {
         super();
-
-        // const App = Express();
-        // const PORT: number: 3000;
-        // const HOST: string: '0.0.0.0';
-        // App.listen(PORT, HOST, () => {
-        // });
     }
 
     /**
      * Boot module
      * @param payload object Payload data
      */
-    async boot(payloa?: object): Promise<void> {
-        GlobalData.logger.info("APP MODULE SHOULD BE IMPLEMENT,,,, ;)")
+    async boot(payload?: object): Promise<void> {
+        GlobalData.logger.info("APP MODULE SHOULD BE IMPLEMENT,,,, ;)");
     }
 }

@@ -1,13 +1,13 @@
 DONE:
     -   LOGGER module
     -   DOT-ENV LOADER
+    -   EVENTS module
 
 DOING:
     -   SERVER module
-    >   EVENTS module
+    >   APPLICATION module
 
 TODO:
-    -   APPLICATION module
     -   DATABASE module
     -   SESSION module
     -   ROUTER module
