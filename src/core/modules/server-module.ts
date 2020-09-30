@@ -35,6 +35,7 @@ export default class Server extends BaseModule implements CoreModuleInterface {
             Boot order
                 1- Logger
                 2- Events
+                3- Application
         */
 
         GlobalData.logger = new LoggerModule();
