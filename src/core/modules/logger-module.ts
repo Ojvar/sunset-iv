@@ -4,11 +4,12 @@ import Winston from "winston";
 import BaseModule from "./base-module";
 import GlobalMethods from "../global/global-methods";
 import LoggerConfig from "../../config/core/logger-config";
+import CoreModuleInterface from "../../types/interfaces/core-module-interface";
 
 /**
  * Logger class
  */
-export default class Logger extends BaseModule {
+export default class Logger extends BaseModule implements CoreModuleInterface {
     private logsFilename: string;
     private errorFilename: string;
 
@@ -17,7 +18,12 @@ export default class Logger extends BaseModule {
      */
     constructor(public logger: any = console) {
         super();
+    }
 
+    /**
+     * Setup variables
+     */
+    public async boot(payload?: object): Promise<void> {
         this.setupVariables();
         this.initWinstonLogger();
     }
@@ -42,7 +48,7 @@ export default class Logger extends BaseModule {
 
         return colorizer.colorize(
             msg.level,
-            `[${msg.level}]\t${msg.timestamp}\n\t${msg.level}: ${msg.message}`
+            `[${msg.level}]\t${msg.timestamp}\n\t${msg.message}`
         );
     }
 
@@ -52,7 +58,7 @@ export default class Logger extends BaseModule {
      * @returns String
      */
     private rawPrintFnc(msg: Winston.Logform.TransformableInfo): string {
-        return `[${msg.level}]\t${msg.timestamp}\n\t${msg.level}: ${msg.message}`;
+        return `[${msg.level}]\t${msg.timestamp}\n\t${msg.message}`;
     }
 
     /**
@@ -61,8 +67,8 @@ export default class Logger extends BaseModule {
     private initWinstonLogger(): void {
         /* Add to log file  */
         const logger = Winston.createLogger({
-            // level: "info",
-            // defaultMeta: {},
+            level: "silly",
+
             format: Winston.format.combine(
                 Winston.format.timestamp(),
                 Winston.format.simple(),
@@ -82,6 +88,7 @@ export default class Logger extends BaseModule {
         if (!GlobalMethods.isProductionMode()) {
             logger.add(
                 new Winston.transports.Console({
+                    level: "silly",
                     format: Winston.format.combine(
                         Winston.format.timestamp(),
                         Winston.format.simple(),
@@ -139,7 +146,7 @@ export default class Logger extends BaseModule {
      * @param log String Log message
      * @param tag String Log tag
      */
-    public warning(log: string, tag?: string): string {
+    public warn(log: string, tag?: string): string {
         return this.log("warn", log, tag);
     }
 
@@ -150,5 +157,32 @@ export default class Logger extends BaseModule {
      */
     public error(log: string, tag?: string): string {
         return this.log("error", log, tag);
+    }
+
+    /**
+     *  Log an http message
+     * @param log String Log message
+     * @param tag String Log tag
+     */
+    public http(log: string, tag?: string): string {
+        return this.log("http", log, tag);
+    }
+
+    /**
+     *  Log an verbose message
+     * @param log String Log message
+     * @param tag String Log tag
+     */
+    public verbose(log: string, tag?: string): string {
+        return this.log("verbose", log, tag);
+    }
+
+    /**
+     *  Log an silly message
+     * @param log String Log message
+     * @param tag String Log tag
+     */
+    public silly(log: string, tag?: string): string {
+        return this.log("silly", log, tag);
     }
 }

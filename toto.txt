@@ -1,0 +1,17 @@
+DONE:
+    -   LOGGER module
+    -   DOT-ENV LOADER
+
+DOING:
+    -   SERVER module
+    >   EVENTS module
+
+TODO:
+    -   APPLICATION module
+    -   DATABASE module
+    -   SESSION module
+    -   ROUTER module
+    -   SERVICE module
+
+    -   REDIS helper
+    -   MONGO driver

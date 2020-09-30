@@ -15,12 +15,15 @@
         "colors": "^1.4.0",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
+        "glob": "^7.1.6",
         "laravel-mix": "^5.0.5",
+        "lodash": "^4.17.20",
         "vue": "^3.0.0",
         "winston": "^3.3.3"
     },
     "devDependencies": {
         "@types/express": "^4.17.8",
+        "@types/lodash": "^4.14.161",
         "@types/node": "^14.11.2",
         "@types/winston": "^2.4.4",
         "nodemon": "^2.0.4",
