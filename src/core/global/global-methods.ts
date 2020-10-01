@@ -1,6 +1,8 @@
 "use strict";
 
+import _ from "lodash";
 import Path from "path";
+import FS from "fs";
 import Glob from "glob";
 import Ora from "ora";
 
@@ -67,5 +69,35 @@ export default class GlobalMethods {
         }
 
         GlobalMethods.spinner.stop();
+    }
+
+    /**
+     * Read a file
+     * @param filename string File name
+     */
+    public static readFile(filename: string): object {
+        let result: object = FS.readFileSync(GlobalMethods.rPath(filename));
+
+        return result;
+    }
+
+    /**
+     * Read a config file
+     * @param config string Config filename
+     * @param keyPath string Key path
+     */
+    public static async config(
+        config: string,
+        keyPath?: string
+    ): Promise<string | number | object> {
+        let result: string | number | object;
+        let path = GlobalMethods.rPath(__dirname, `../../config/${config}`);
+        result = (await import(path)).default;
+
+        if (keyPath) {
+            result = _.get(result, keyPath);
+        }
+
+        return result;
     }
 }
