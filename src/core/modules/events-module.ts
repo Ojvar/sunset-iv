@@ -61,8 +61,6 @@ export default class Events extends BaseModule implements CoreModuleInterface {
         /* Load module */
         let EventHandler = (await import(file)).default;
 
-        console.log(EventHandler);
-
         const eventHandler: EventHandlerInterface = new EventHandler();
         const eventName: string = eventHandler.getName();
 

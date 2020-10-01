@@ -10,4 +10,11 @@ export default class ApplicationConfigType {
     public url: string;
     public protocol: string;
     public isHttps: boolean;
+
+    public trustedProxy: string;
+
+    public throttleStore: string;
+    public throttleWindow: string;
+    public throttleMax: string;
+    public throttleDelay: string;
 }
