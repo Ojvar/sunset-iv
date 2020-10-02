@@ -6,7 +6,6 @@ import LoggerModule from "./logger-module";
 import EventsModule from "./events-module";
 import BaseModule from "./base-module";
 import ApplicationModule from "./application-module";
-import RouterModule from "./router-module";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
 
@@ -54,12 +53,6 @@ export default class Server extends BaseModule implements CoreModuleInterface {
         GlobalData.application = new ApplicationModule();
         await GlobalData.application.boot();
         GlobalData.logger.info("Application initialized");
-
-        /* Router module */
-        GlobalData.router = new RouterModule();
-        await GlobalData.router.boot();
-        GlobalData.logger.info("Router initialized");
-        GlobalData.events.raise("RouterInit");
 
         /* Raise AppInit event */
         GlobalData.events.raise("ServerInit");

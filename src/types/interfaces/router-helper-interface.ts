@@ -1,7 +1,7 @@
 "use strict";
 
 import { RouterItemType } from "data-types/router-item-type";
-import { RequestHandler } from "express";
+import Express, { RequestHandler } from "express";
 import IHash from "./hash";
 
 /**
@@ -26,10 +26,16 @@ export default interface RouterHelperInterface {
     getRoutesList(): IHash<RouterItemType>;
 
     /**
+     * Return router
+     * @returns Express.IRouter router
+     */
+    getRouter(): Express.IRouter;
+
+    /**
      * Add new route
      * @param alias string
      */
-    private updateNamedRoutes(alias: string): void;
+    updateNamedRoutes(alias: string): void;
 
     /**
      * Define an action - [ALL]

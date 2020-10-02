@@ -5,18 +5,21 @@ import FS from "fs";
 import Path from "path";
 import IHash from "interfaces/hash";
 import CoreModuleInterface from "interfaces/core-module-interface";
-import RouterHelperInterface from "interfaces/route-helper-interface";
+import RouterHelperInterface from "interfaces/router-helper-interface";
 import ServerConfigType from "data-types/server-config-type";
 import { RouterItemType } from "data-types/router-item-type";
 import BaseModule from "./base-module";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
+import RouterHelper from "../heleprs/router-helper";
+import Application from "./application-module";
 
 /**
  * Router class
  */
 export default class Router extends BaseModule implements CoreModuleInterface {
-    private routers: IHash<RouterItemType> = {};
+    private routers: RouterHelperInterface[] = [];
+    private routeList: IHash<RouterItemType> = {};
 
     /**
      * Events-Class ctr
@@ -39,7 +42,6 @@ export default class Router extends BaseModule implements CoreModuleInterface {
      */
     public async prepareRoutes(): Promise<void> {
         const routesPath: string = `${__dirname}/../../routes/**/*`;
-
         const files: string[] = await GlobalMethods.loadFiles(routesPath);
 
         for (let i = 0; i < files.length; ++i) {
@@ -50,8 +52,21 @@ export default class Router extends BaseModule implements CoreModuleInterface {
                 .default as RouterHelperInterface;
             const routesList: IHash<RouterItemType> = router.getRoutesList();
 
-            /* Append to routers list */
-            this.routers = _.merge({}, this.routers, routesList);
+            /* Update lists */
+            this.routers.push(router);
+            this.routeList = _.merge({}, this.routeList, routesList);
+        }
+    }
+
+    /**
+     * Setup App routes
+     * @param app Application Application instance
+     */
+    public setupRoutes(app: Application): void {
+        for (let i = 0; i < this.routers.length; i++) {
+            const router = this.routers[i];
+
+            app.useRouter(router.getBaseUrl(), router.getRouter());
         }
     }
 
@@ -74,8 +89,7 @@ export default class Router extends BaseModule implements CoreModuleInterface {
         /* Make path */
         await GlobalMethods.createDir(Path.dirname(path));
 
-        /* TODO: USE ROUTERS DATA */
-        const jsData: string = JSON.stringify(this.routers, null, 2);
+        const jsData: string = JSON.stringify(this.routeList, null, 2);
         FS.writeFileSync(path, jsData);
     }
 }

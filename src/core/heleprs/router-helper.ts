@@ -2,7 +2,7 @@
 
 import Express, { RequestHandler } from "express";
 import IHash from "interfaces/hash";
-import RouterHelperInterface from "interfaces/route-helper-interface";
+import RouterHelperInterface from "interfaces/router-helper-interface";
 import { RouterItemType } from "data-types/router-item-type";
 
 /**
@@ -35,6 +35,14 @@ export default class RouterHelper implements RouterHelperInterface {
      */
     public getBaseUrl(): string {
         return this.baseUrl;
+    }
+
+    /**
+     * Return router
+     * @returns Express.IRouter router
+     */
+    public getRouter(): Express.IRouter {
+        return this.router;
     }
 
     /**

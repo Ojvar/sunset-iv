@@ -9,5 +9,5 @@ const router = new RouteHelper("");
 export default router;
 
 /* Prepare routes */
-router.get("/:name", controller.index, "home.index");
+router.get("/:name?", controller.index, "home.index");
 router.get("/about", controller.about, "home.about");

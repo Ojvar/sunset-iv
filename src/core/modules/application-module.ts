@@ -8,6 +8,7 @@ import Http from "https";
 import Https from "https";
 import ApplicationConfigType from "data-types/application-config-type";
 import BaseModule from "./base-module";
+import RouterModule from "./router-module";
 import CoreModuleInterface from "../../types/interfaces/core-module-interface";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
@@ -142,6 +143,16 @@ Server started
 
         await this.setupPugEngine(this.app);
         await this.setupMiddlewares(this.app);
+        await this.setupRoutes(this.app);
+    }
+
+    /**
+     * Use a router in app
+     * @param pattern string.Router pattern
+     * @param router Express.IRouter Router instance
+     */
+    public useRouter(pattern: string, router: Express.IRouter): void {
+        this.app.use(pattern, router);
     }
 
     /**
@@ -165,7 +176,20 @@ Server started
         await this.setupHelmet(app);
         await this.setupCSRF(app);
         await this.setupMulter(app);
+    }
 
+    /**
+     * Setup Routes
+     * @param app Express.Application App Instance
+     */
+    private async setupRoutes(app: Express.Application): Promise<void> {
+        /* Router module */
+        GlobalData.router = new RouterModule();
+        await GlobalData.router.boot();
+        await GlobalData.router.setupRoutes(this);
+        GlobalData.events.raise("RouterInit");
+
+        /* Setup post-routes handlers */
         await this.setupRouteHandler(app);
         await this.setupRouteErrors(app);
     }
