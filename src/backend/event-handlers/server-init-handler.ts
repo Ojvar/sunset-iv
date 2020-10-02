@@ -16,9 +16,7 @@ export default class ServerInitHandler implements EventHandlerInterface {
      * @param payload object Payload object
      */
     public async boot(payload: object): Promise<void> {
-        GlobalData.logger.info(
-            "ServerInit event-handler BOOT() successfully"
-        );
+        GlobalData.logger.info("ServerInit event-handler BOOT() successfully");
     }
 
     /**
@@ -26,6 +24,8 @@ export default class ServerInitHandler implements EventHandlerInterface {
      * @param payload Object Payload data
      */
     public async handle(payload: object): Promise<void> {
-        GlobalData.logger.info("ServerInit Handler\n\t\t> Server initialized successfully");
+        GlobalData.logger.info(
+            "ServerInit Handler\n\t\t> Server initialized successfully"
+        );
     }
 }

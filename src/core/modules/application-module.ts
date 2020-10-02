@@ -52,8 +52,6 @@ export default class Application extends BaseModule
         await this.prepareData();
         await this.setupApp();
         await this.listen();
-
-        GlobalData.logger.info("APP MODULE SHOULD BE IMPLEMENT,,,, ;)");
     }
 
     /**

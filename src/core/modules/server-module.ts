@@ -24,44 +24,47 @@ export default class Server extends BaseModule implements CoreModuleInterface {
      * Boot
      */
     public async boot(): Promise<void> {
-        this.loadEnvData();
-        this.initLogger();
-    }
-
-    /**
-     * Init logger
-     */
-    private async initLogger(): Promise<void> {
-        /* 
-            Boot order
-                1- Logger
-                2- Events
-                3- Application
-        */
-
-        /* Logger module */
-        GlobalData.logger = new LoggerModule();
-        await GlobalData.logger.boot();
-        GlobalData.logger.info("Logger initialized");
-
-        /* Events module */
-        GlobalData.events = new EventsModule();
-        await GlobalData.events.boot();
-        GlobalData.logger.info("Events initialized");
-
-        /* Application module */
-        GlobalData.application = new ApplicationModule();
-        await GlobalData.application.boot();
-        GlobalData.logger.info("Application initialized");
+        await this.loadEnvData();
+        await this.initLogger();
+        await this.initEvents();
+        await this.initApplication();
 
         /* Raise AppInit event */
         GlobalData.events.raise("ServerInit");
     }
 
     /**
+     * Init logger
+     */
+    private async initLogger(): Promise<void> {
+        /* Logger module */
+        GlobalData.logger = new LoggerModule();
+        await GlobalData.logger.boot();
+        GlobalData.logger.info("Logger initialized");
+    }
+
+    /**
+     * Init Events
+     */
+    private async initEvents(): Promise<void> {
+        GlobalData.events = new EventsModule();
+        await GlobalData.events.boot();
+        GlobalData.logger.info("Events initialized");
+    }
+
+    /**
+     *  Init Application
+     */
+    private async initApplication(): Promise<void> {
+        GlobalData.application = new ApplicationModule();
+        await GlobalData.application.boot();
+        GlobalData.logger.info("Application initialized");
+    }
+
+    /**
      * Loding env-file data
      */
-    private loadEnvData(): void {
+    private async loadEnvData(): Promise<void> {
         const envFile = process.env.ENV_FILE || ".env";
         const envFilePath = GlobalMethods.rPath(envFile);
 
