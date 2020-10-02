@@ -1,8 +1,9 @@
 "use strict";
 
 import FS from "fs";
+import Path from "path";
 import Chalk from "chalk";
-import Express, { NextFunction, RequestHandler } from "express";
+import Express, { NextFunction } from "express";
 import Http from "https";
 import Https from "https";
 import BaseModule from "./base-module";
@@ -135,7 +136,18 @@ Server started
      */
     private async setupApp(): Promise<void> {
         this.app = Express();
+
+        await this.setupPugEngine(this.app);
         await this.setupMiddlewares(this.app);
+    }
+
+    /**
+     * Setup Pug engine
+     * @param app Express.Application App Instance
+     */
+    private async setupPugEngine(app: Express.Application): Promise<void> {
+        app.set("view engine", "pug");
+        app.set("views", Path.resolve(__dirname, "../../frontend/views"));
     }
 
     /**
@@ -301,9 +313,7 @@ Server started
             ): void => {
                 switch (GlobalMethods.getRequestType(req)) {
                     case "html":
-                        res.status(404)
-                            .send("ROUTE NOT FOUND")
-                            .end();
+                        res.render("errors/404.pug");
                         break;
 
                     case "xhr":
@@ -355,10 +365,9 @@ Server started
             /* Send to client */
             switch (GlobalMethods.getRequestType(req)) {
                 case "html":
-                    /* TODO: RENDER PAGE */
-                    res.status(500)
-                        .send(errorData)
-                        .end();
+                    res.render("errors/500.pug", {
+                        data: errorData,
+                    });
                     break;
 
                 case "xhr":
