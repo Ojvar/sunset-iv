@@ -4,6 +4,21 @@ import Express, { RequestHandler } from "express";
 import IHash from "interfaces/hash";
 
 /**
+ * Route Item DataType
+ */
+export type RouteItemType = {
+    baseUrl: string;
+    path: string;
+    alias?: string;
+    method: string;
+    keys?: {
+        name: string;
+        optional: boolean;
+        order: number;
+    };
+};
+
+/**
  * Router class
  */
 export default class Router {
@@ -36,19 +51,32 @@ export default class Router {
     }
 
     /**
-     *
-     * @param middlewares (string, Function)[] Handlers array
+     * Get routes list
      */
-    public setPreMiddlewares(middlewares: Function[]): void {
-        /* TODO: ADD PRE MIDDLEWARES */
-        console.log(middlewares);
+    public getRoutesList(): IHash<RouteItemType> {
+        const result: IHash<RouteItemType> = {};
+        const keys = Object.keys(this.namedRoutes);
+
+        keys.forEach((key) => {
+            const route: any = this.namedRoutes[key];
+
+            result[key] = {
+                baseUrl: this.baseUrl,
+                alias: key,
+                path: route.route.path,
+                keys: route.keys,
+                method: route.route.stack.map((x: any) => x.method),
+            } as RouteItemType;
+        });
+
+        return result;
     }
 
     /**
      * Add new route
      * @param alias string
      */
-    public updateNamedRoutes(alias: string): void {
+    private updateNamedRoutes(alias: string): void {
         const lastRoute = this.router.stack[this.router.stack.length - 1];
 
         this.namedRoutes[alias] = lastRoute;

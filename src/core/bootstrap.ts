@@ -1,6 +1,8 @@
 "use strict";
 
-import "../routes/home-router";
+import HomeRouter from "../routes/home-router";
+
+console.log(HomeRouter.router.getRoutesList());
 
 // import ServerModule from "./modules/server-module";
 
