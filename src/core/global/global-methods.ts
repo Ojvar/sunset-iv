@@ -1,12 +1,13 @@
 "use strict";
 
-import _, { result } from "lodash";
+import _ from "lodash";
 import Path from "path";
 import FS from "fs";
 import Glob from "glob";
 import Ora from "ora";
+import MkDirP from "mkdirp";
 import Express, { NextFunction } from "express";
-import CSRFConfigType from "data-types/csrf-config-type";
+import CsrfConfigType from "data-types/csrf-config-type";
 
 /**
  * Global methods
@@ -92,6 +93,11 @@ export default class GlobalMethods {
         config: string,
         keyPath?: string
     ): Promise<T> {
+        /* fix config filename */
+        if (!config.endsWith("config")) {
+            config += "-config";
+        }
+
         let result: T;
         let path = GlobalMethods.rPath(__dirname, `../../config/${config}`);
         result = (await import(path)).default as T;
@@ -109,21 +115,20 @@ export default class GlobalMethods {
      */
     public static async useCSRF(req: Express.Request): Promise<Function> {
         /* TODO: load csrf rules from config-file */
-        const csrfRules: CSRFConfigType = await GlobalMethods.config<
-            CSRFConfigType
+        const csrfRules: CsrfConfigType = await GlobalMethods.config<
+            CsrfConfigType
         >("core/csrf-rules");
-        const rules = (csrfRules.ignoreList + "").split(/[\ |\:\;\,]+/g);
 
         return function(
             req: Express.Request,
             res: Express.Response,
             next: NextFunction
         ): boolean {
-            return (
-                rules.find((rule: string) =>
-                    req.originalUrl.match(new RegExp(rule))
-                ) != null
+            const index: number = csrfRules.ignoreList.findIndex(
+                (rule: string) => req.originalUrl.match(new RegExp(rule))
             );
+
+            return index != -1;
         };
     }
 
@@ -133,5 +138,15 @@ export default class GlobalMethods {
      */
     public static getRequestType(req: Express.Request): string | boolean {
         return req.accepts(["html", "json"]);
+    }
+
+    /**
+     * Create directory
+     * @param path string Dir path
+     */
+    public static async createDir(path: string): Promise<void> {
+        if (!FS.existsSync(path)) {
+            await MkDirP(path);
+        }
     }
 }

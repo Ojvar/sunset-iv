@@ -12,4 +12,7 @@ export default {
     throttleWindow: process.env.EXPRESS_THROTTLE_WINDOW || 60 * 1000,
     throttleMax: process.env.EXPRESS_THROTTLE_MAX || 60,
     throttleDelay: process.env.EXPRESS_THROTTLE_DELAY || 0,
+
+    /* Use multer as default */
+    useMulter: true
 };

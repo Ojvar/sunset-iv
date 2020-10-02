@@ -19,10 +19,10 @@ import CookieParser from "cookie-parser";
 import ExpressErrorType from "data-types/express-error-type";
 import Helmet from "helmet";
 import CSURF from "csurf";
-// import Multer from "multer";
-// import MkDirP from "mkdirp";
-// import { v4 as uuidV4 } from "uuid";
-// import MimeTypes from "mime-types";
+import MulterConfigType from "data-types/multer-config-type";
+import Multer from "multer";
+import { v4 as uuidV4 } from "uuid";
+import MimeTypes from "mime-types";
 
 /**
  * Application class
@@ -122,7 +122,7 @@ Server started
      */
     private async prepareData(): Promise<void> {
         this.appConfig = await GlobalMethods.config<ApplicationConfigType>(
-            "core/express-config"
+            "core/express"
         );
 
         /* Setup data */
@@ -143,38 +143,23 @@ Server started
      * @param app Express.Application App Instance
      */
     private async setupMiddlewares(app: Express.Application): Promise<void> {
-        /* 
-            Middlewares
+        await this.setupTrustedProxy(app);
+        await this.setupCORS(app);
+        await this.setupThrottle(app);
+        await this.setupBodyAndCookieParser(app);
+        await this.setupHelmet(app);
+        await this.setupCSRF(app);
+        await this.setupMulter(app);
 
-            - BodyParser
-            - CookieParser
-            - CSURF
-            - CORS
-            - Helmet
-            - Morgan
-            - RateLimit
-            - RedisStore
-            - Multer
-            - MkDirP
-            - uuidV4
-            - MimeTypes
-        */
-
-        this.setupTrustedProxy(app);
-        this.setupCORS(app);
-        this.setupThrottle(app);
-        this.setupBodyAndCookieParser(app);
-        this.setupHelmet(app);
-        this.setupCSRF(app);
-        this.setupRouteHandler(app);
-        this.setupRouteErrors(app);
+        await this.setupRouteHandler(app);
+        await this.setupRouteErrors(app);
     }
 
     /**
      * Setup trusted proxy level
      * @param app Express.Applicaiton Application instance
      */
-    private setupTrustedProxy(app: Express.Application): void {
+    private async setupTrustedProxy(app: Express.Application): Promise<void> {
         if (GlobalMethods.isProductionMode()) {
             app.set("trust proxy", this.appConfig.trustedProxy);
         }
@@ -184,7 +169,7 @@ Server started
      * Setup CROS
      * @param app Express.Applicaiton Application instance
      */
-    private setupCORS(app: Express.Application): void {
+    private async setupCORS(app: Express.Application): Promise<void> {
         const corsOptions = {
             origin: true,
             // some legacy browsers (IE11, various SmartTVs) choke on 204
@@ -199,7 +184,7 @@ Server started
      * Setup throttle
      * @param app Express.Applicaiton Application instance
      */
-    private setupThrottle(app: Express.Application): void {
+    private async setupThrottle(app: Express.Application): Promise<void> {
         const rateLimitOptions: RateLimit.Options = {
             windowMs: +this.appConfig.throttleWindow,
             max: +this.appConfig.throttleMax,
@@ -217,7 +202,9 @@ Server started
      * Setup Body and Cookie parsers
      * @param app Express.Applicaiton Application instance
      */
-    private setupBodyAndCookieParser(app: Express.Application): void {
+    private async setupBodyAndCookieParser(
+        app: Express.Application
+    ): Promise<void> {
         /* Add cookie-parse */
         app.use(CookieParser());
 
@@ -235,7 +222,7 @@ Server started
      * Setup Helmet
      * @param app Express.Applicaiton Application instance
      */
-    private setupHelmet(app: Express.Application): void {
+    private async setupHelmet(app: Express.Application): Promise<void> {
         /* Helmet */
         app.use(Helmet());
     }
@@ -244,13 +231,13 @@ Server started
      * Setup CSRF
      * @param app Express.Applicaiton Application instance
      */
-    private setupCSRF(app: Express.Application): void {
+    private async setupCSRF(app: Express.Application): Promise<void> {
         const csrf = CSURF({
             cookie: true,
         });
 
         app.use((req, res, next) => {
-            if (GlobalMethods.useCSRF && GlobalMethods.useCSRF(req)) {
+            if (GlobalMethods.useCSRF(req)) {
                 next();
             } else {
                 csrf(req, res, next);
@@ -264,10 +251,48 @@ Server started
     }
 
     /**
+     * Setup Multer
+     * @param app Express.Applicaiton Application instance
+     */
+    private async setupMulter(app: Express.Application): Promise<void> {
+        /* Setup multer */
+        const multerConfig: MulterConfigType = await GlobalMethods.config<
+            MulterConfigType
+        >("core/multer");
+
+        /* Create storage diretory */
+        await GlobalMethods.createDir(multerConfig.storage);
+
+        /* Setup multer */
+        const storage: Multer.StorageEngine = Multer.diskStorage({
+            destination: function(req, file, cb) {
+                cb(null, multerConfig.storage);
+            },
+            filename: function(req, file, cb) {
+                let ext = MimeTypes.extension(file.mimetype);
+                ext = ext ? `.${ext}` : "";
+
+                let filename = `${uuidV4()}${ext}`;
+                cb(null, filename);
+            },
+        });
+
+        GlobalData.upload = Multer({
+            limits: { fieldSize: multerConfig.maxSize },
+            storage,
+        });
+
+        /* Use multer as middleware */
+        if (this.appConfig.useMulter) {
+            app.use(GlobalData.upload.any());
+        }
+    }
+
+    /**
      * Setup RouteHandler
      * @param app Express.Applicaiton Application instance
      */
-    private setupRouteHandler(app: Express.Application): void {
+    private async setupRouteHandler(app: Express.Application): Promise<void> {
         app.use(
             (
                 req: Express.Request,
@@ -304,7 +329,7 @@ Server started
      * Setup RouteErrors
      * @param app Express.Applicaiton Application instance
      */
-    private setupRouteErrors(app: Express.Application): void {
+    private async setupRouteErrors(app: Express.Application): Promise<void> {
         const errHandler = (
             error: Error,
             req: Express.Request,

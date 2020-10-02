@@ -17,4 +17,6 @@ export default class ApplicationConfigType {
     public throttleWindow: string;
     public throttleMax: string;
     public throttleDelay: string;
+    
+    public useMulter: boolean;
 }

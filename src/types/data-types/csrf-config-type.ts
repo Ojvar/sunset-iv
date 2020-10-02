@@ -3,6 +3,6 @@
 /**
  * CSRF Config Type
  */
-export default class CSRFConfigType {
-    public ignoreList: string;
+export default class CsrfConfigType {
+    public ignoreList: string[];
 }
