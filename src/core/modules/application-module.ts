@@ -17,8 +17,8 @@ import RedisStore from "rate-limit-redis";
 import BodyParser from "body-parser";
 import CookieParser from "cookie-parser";
 import ExpressErrorType from "data-types/express-error-type";
-// import CSURF from "csurf";
-// import Helmet from "helmet";
+import Helmet from "helmet";
+import CSURF from "csurf";
 // import Multer from "multer";
 // import MkDirP from "mkdirp";
 // import { v4 as uuidV4 } from "uuid";
@@ -121,9 +121,9 @@ Server started
      * Prepare data
      */
     private async prepareData(): Promise<void> {
-        const config = await GlobalMethods.config("core/express-config");
-
-        this.appConfig = config as ApplicationConfigType;
+        this.appConfig = await GlobalMethods.config<ApplicationConfigType>(
+            "core/express-config"
+        );
 
         /* Setup data */
         this.appConfig.isHttps = this.appConfig.protocol === this.C_PROTO_HTTPS;
@@ -160,31 +160,64 @@ Server started
             - MimeTypes
         */
 
-        /* Set trusted proxy level */
+        this.setupTrustedProxy(app);
+        this.setupCORS(app);
+        this.setupThrottle(app);
+        this.setupBodyAndCookieParser(app);
+        this.setupHelmet(app);
+        this.setupCSRF(app);
+        this.setupRouteHandler(app);
+        this.setupRouteErrors(app);
+    }
+
+    /**
+     * Setup trusted proxy level
+     * @param app Express.Applicaiton Application instance
+     */
+    private setupTrustedProxy(app: Express.Application): void {
         if (GlobalMethods.isProductionMode()) {
             app.set("trust proxy", this.appConfig.trustedProxy);
         }
+    }
 
-        /* CORS */
+    /**
+     * Setup CROS
+     * @param app Express.Applicaiton Application instance
+     */
+    private setupCORS(app: Express.Application): void {
         const corsOptions = {
             origin: true,
             // some legacy browsers (IE11, various SmartTVs) choke on 204
             optionsSuccessStatus: 200,
         };
+
         app.options("*", CORS(corsOptions));
         app.use(CORS());
+    }
 
-        /* Setup throttle */
+    /**
+     * Setup throttle
+     * @param app Express.Applicaiton Application instance
+     */
+    private setupThrottle(app: Express.Application): void {
         const rateLimitOptions: RateLimit.Options = {
             windowMs: +this.appConfig.throttleWindow,
             max: +this.appConfig.throttleMax,
             delayMs: +this.appConfig.throttleDelay,
         } as RateLimit.Options;
+
         if (this.appConfig.throttleStore == this.C_STORE_REDIS) {
             rateLimitOptions.store = new RedisStore({});
         }
-        GlobalData.rateLimiter = RateLimit(rateLimitOptions);
 
+        GlobalData.rateLimiter = RateLimit(rateLimitOptions);
+    }
+
+    /**
+     * Setup Body and Cookie parsers
+     * @param app Express.Applicaiton Application instance
+     */
+    private setupBodyAndCookieParser(app: Express.Application): void {
         /* Add cookie-parse */
         app.use(CookieParser());
 
@@ -194,51 +227,130 @@ Server started
                 extended: false,
             } as BodyParser.OptionsUrlencoded)
         );
-        app.use(BodyParser.json());
 
-        /* Setup Not found route middleware */
-        // app.use();
+        app.use(BodyParser.json());
+    }
+
+    /**
+     * Setup Helmet
+     * @param app Express.Applicaiton Application instance
+     */
+    private setupHelmet(app: Express.Application): void {
+        /* Helmet */
+        app.use(Helmet());
+    }
+
+    /**
+     * Setup CSRF
+     * @param app Express.Applicaiton Application instance
+     */
+    private setupCSRF(app: Express.Application): void {
+        const csrf = CSURF({
+            cookie: true,
+        });
+
+        app.use((req, res, next) => {
+            if (GlobalMethods.useCSRF && GlobalMethods.useCSRF(req)) {
+                next();
+            } else {
+                csrf(req, res, next);
+            }
+        });
+
+        app.use((req, res, next) => {
+            res.locals.csrftoken = req.csrfToken ? req.csrfToken() : "";
+            next();
+        });
+    }
+
+    /**
+     * Setup RouteHandler
+     * @param app Express.Applicaiton Application instance
+     */
+    private setupRouteHandler(app: Express.Application): void {
         app.use(
             (
                 req: Express.Request,
                 res: Express.Response,
                 next: NextFunction
             ): void => {
-                res.status(404)
-                    .send("ROUTE NOT FOUND")
-                    .end();
+                switch (GlobalMethods.getRequestType(req)) {
+                    case "html":
+                        res.status(404)
+                            .send("ROUTE NOT FOUND")
+                            .end();
+                        break;
+
+                    case "xhr":
+                        res.status(404)
+                            .send({
+                                success: false,
+                                data: "Route not found",
+                            })
+                            .end();
+                        break;
+
+                    default:
+                        res.status(404)
+                            .send("Bad Request")
+                            .end();
+                        break;
+                }
             }
         );
+    }
+
+    /**
+     * Setup RouteErrors
+     * @param app Express.Applicaiton Application instance
+     */
+    private setupRouteErrors(app: Express.Application): void {
+        const errHandler = (
+            error: Error,
+            req: Express.Request,
+            res: Express.Response,
+            next: NextFunction
+        ): void => {
+            if (res.headersSent) {
+                return next(error);
+            }
+
+            let errorData: ExpressErrorType = {
+                text: "Server Internal Error!",
+                error: null,
+            };
+
+            if (!GlobalMethods.isProductionMode()) {
+                errorData.error = JSON.stringify(error);
+            }
+
+            /* Log error */
+            GlobalData.logger.error(JSON.stringify(errorData));
+
+            /* Send to client */
+            switch (GlobalMethods.getRequestType(req)) {
+                case "html":
+                    /* TODO: RENDER PAGE */
+                    res.status(500)
+                        .send(errorData)
+                        .end();
+                    break;
+
+                case "xhr":
+                    res.status(500)
+                        .send(errorData)
+                        .end();
+                    break;
+
+                default:
+                    res.status(500)
+                        .send("BAD REQUEST")
+                        .end();
+                    break;
+            }
+        };
 
         /* Setup Error handler middleware */
-        app.use(
-            (
-                error: Error,
-                req: Express.Request,
-                res: Express.Response,
-                next: NextFunction
-            ): void => {
-                if (res.headersSent) {
-                    return next(error);
-                }
-
-                let errorData: ExpressErrorType = {
-                    text: "Server Internal Error!",
-                    error: null,
-                };
-
-                if (!GlobalMethods.isProductionMode()) {
-                    errorData.error = JSON.stringify(error);
-                }
-
-                /* Log error */
-                GlobalData.logger.error(JSON.stringify(errorData));
-
-                /* Send to client */
-                res.status(500)
-                    .send(errorData)
-                    .end();
-            }
-        );
+        app.use(errHandler);
     }
 }

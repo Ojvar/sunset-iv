@@ -1,10 +1,12 @@
 "use strict";
 
-import _ from "lodash";
+import _, { result } from "lodash";
 import Path from "path";
 import FS from "fs";
 import Glob from "glob";
 import Ora from "ora";
+import Express, { NextFunction } from "express";
+import CSRFConfigType from "data-types/csrf-config-type";
 
 /**
  * Global methods
@@ -86,18 +88,50 @@ export default class GlobalMethods {
      * @param config string Config filename
      * @param keyPath string Key path
      */
-    public static async config(
+    public static async config<T>(
         config: string,
         keyPath?: string
-    ): Promise<string | number | object> {
-        let result: string | number | object;
+    ): Promise<T> {
+        let result: T;
         let path = GlobalMethods.rPath(__dirname, `../../config/${config}`);
-        result = (await import(path)).default;
+        result = (await import(path)).default as T;
 
         if (keyPath) {
-            result = _.get(result, keyPath);
+            result = _.get(result, keyPath) as T;
         }
 
         return result;
+    }
+
+    /**
+     * Check for Ignore route form CSRF  or not
+     * @param req Express.Request The request
+     */
+    public static async useCSRF(req: Express.Request): Promise<Function> {
+        /* TODO: load csrf rules from config-file */
+        const csrfRules: CSRFConfigType = await GlobalMethods.config<
+            CSRFConfigType
+        >("core/csrf-rules");
+        const rules = (csrfRules.ignoreList + "").split(/[\ |\:\;\,]+/g);
+
+        return function(
+            req: Express.Request,
+            res: Express.Response,
+            next: NextFunction
+        ): boolean {
+            return (
+                rules.find((rule: string) =>
+                    req.originalUrl.match(new RegExp(rule))
+                ) != null
+            );
+        };
+    }
+
+    /**
+     * Check for RequestType
+     * @param req Express.Request The request
+     */
+    public static getRequestType(req: Express.Request): string | boolean {
+        return req.accepts(["html", "json"]);
     }
 }
