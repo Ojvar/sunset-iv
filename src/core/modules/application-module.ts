@@ -6,11 +6,11 @@ import Chalk from "chalk";
 import Express, { NextFunction } from "express";
 import Http from "https";
 import Https from "https";
+import ApplicationConfigType from "data-types/application-config-type";
 import BaseModule from "./base-module";
 import CoreModuleInterface from "../../types/interfaces/core-module-interface";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
-import ApplicationConfigType from "data-types/application-config-type";
 
 import CORS from "cors";
 import RateLimit from "express-rate-limit";
@@ -47,7 +47,7 @@ export default class Application extends BaseModule
      * Boot module
      * @param payload object Payload data
      */
-    async boot(payload?: object): Promise<void> {
+    public async boot(payload?: object): Promise<void> {
         await this.prepareData();
         await this.setupApp();
         await this.listen();
@@ -82,7 +82,10 @@ Server started
      * @param useHttps boolean Use https
      * @param app Express.Application App instance
      */
-    createServer(useHttps: boolean, app: Express.Application): Http.Server {
+    public createServer(
+        useHttps: boolean,
+        app: Express.Application
+    ): Http.Server {
         let server: Http.Server;
 
         if (useHttps) {

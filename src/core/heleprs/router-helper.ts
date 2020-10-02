@@ -2,26 +2,13 @@
 
 import Express, { RequestHandler } from "express";
 import IHash from "interfaces/hash";
-
-/**
- * Route Item DataType
- */
-export type RouteItemType = {
-    baseUrl: string;
-    path: string;
-    alias?: string;
-    method: string;
-    keys?: {
-        name: string;
-        optional: boolean;
-        order: number;
-    };
-};
+import RouterHelperInterface from "interfaces/route-helper-interface";
+import { RouterItemType } from "data-types/router-item-type";
 
 /**
  * Router class
  */
-export default class Router {
+export default class RouterHelper implements RouterHelperInterface {
     private router: Express.Router;
     private namedRoutes: IHash<any> = {};
     private baseUrl: string;
@@ -53,8 +40,8 @@ export default class Router {
     /**
      * Get routes list
      */
-    public getRoutesList(): IHash<RouteItemType> {
-        const result: IHash<RouteItemType> = {};
+    public getRoutesList(): IHash<RouterItemType> {
+        const result: IHash<RouterItemType> = {};
         const keys = Object.keys(this.namedRoutes);
 
         keys.forEach((key) => {
@@ -66,7 +53,7 @@ export default class Router {
                 path: route.route.path,
                 keys: route.keys,
                 method: route.route.stack.map((x: any) => x.method),
-            } as RouteItemType;
+            } as RouterItemType;
         });
 
         return result;
@@ -76,7 +63,7 @@ export default class Router {
      * Add new route
      * @param alias string
      */
-    private updateNamedRoutes(alias: string): void {
+    public updateNamedRoutes(alias: string): void {
         const lastRoute = this.router.stack[this.router.stack.length - 1];
 
         this.namedRoutes[alias] = lastRoute;
@@ -185,8 +172,7 @@ export default class Router {
      * @param url string Url
      * @param handlers Handlers
      * @param alias
-     */
-    public options(
+     */ public options(
         url: string,
         handlers: RequestHandler,
         alias?: string

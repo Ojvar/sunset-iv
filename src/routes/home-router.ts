@@ -1,17 +1,13 @@
 "use strict";
 
-import RouteHelper from "../core/heleprs/route-helper";
+import RouteHelper from "../core/heleprs/router-helper";
 import HomeController from "../backend/controllers/home-controller";
 
 /* Define router */
-const router = new RouteHelper("/");
 const controller = new HomeController();
-
-export default {
-    baseUrl: "",
-    router,
-};
+const router = new RouteHelper("");
+export default router;
 
 /* Prepare routes */
-router.get("/:arg_name", controller.index, "home.index");
+router.get("/:name", controller.index, "home.index");
 router.get("/about", controller.about, "home.about");

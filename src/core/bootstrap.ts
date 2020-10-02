@@ -1,10 +1,6 @@
 "use strict";
 
-import HomeRouter from "../routes/home-router";
+import ServerModule from "./modules/server-module";
 
-console.log(HomeRouter.router.getRoutesList());
-
-// import ServerModule from "./modules/server-module";
-
-// const server: ServerModule = new ServerModule();
-// server.boot();
+const server: ServerModule = new ServerModule();
+server.boot();

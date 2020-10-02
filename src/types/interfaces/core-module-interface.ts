@@ -9,5 +9,5 @@ export default interface CoreModuleInterface {
      *   Runs at loading object
      * @param payload object Payload object
      */
-    boot(payload: object): Promise<void>;
+    boot(payload?: object): Promise<void>;
 }

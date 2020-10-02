@@ -25,7 +25,7 @@ export default class Events extends BaseModule implements CoreModuleInterface {
      * Boot module
      * @param payload object Payload data
      */
-    async boot(payload?: object): Promise<void> {
+    public async boot(payload?: object): Promise<void> {
         await this.init();
 
         GlobalData.logger.info("Events Module initialized successfully");

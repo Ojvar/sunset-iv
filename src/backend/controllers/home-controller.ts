@@ -18,9 +18,13 @@ export default class HomeController extends BaseController {
         res: Express.Response,
         next: NextFunction
     ): Promise<void> {
-        res.render("home.pug");
+        const name: string = req.params.name || "John Doe";
+
+        res.render("home.pug", {
+            name,
+        });
     }
-    
+
     /**
      * About action
      * @param req Express.Reuest Request
