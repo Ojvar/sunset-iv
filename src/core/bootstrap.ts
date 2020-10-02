@@ -1,6 +1,8 @@
 "use strict";
 
-import ServerModule from "./modules/server-module";
+import "../routes/home-router";
 
-const server: ServerModule = new ServerModule();
-server.boot();
+// import ServerModule from "./modules/server-module";
+
+// const server: ServerModule = new ServerModule();
+// server.boot();
