@@ -3,15 +3,15 @@ DONE:
     -   DOT-ENV LOADER
     -   EVENTS module
     -   APPLICATION module
+    -   ROUTER module
     -   REDIS helper
 
 DOING:
     -   SERVER module
+    >>   SESSION module
 
 TODO:
     -   DATABASE module
-    -   ROUTER module
     -   SERVICE module
-    >>   SESSION module
 
     -   MONGO driver
