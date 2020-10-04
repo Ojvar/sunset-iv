@@ -5,10 +5,10 @@ DONE:
     -   APPLICATION module
     -   ROUTER module
     -   REDIS helper
+    -   SESSION module
 
 DOING:
-    -   SERVER module
-    >>   SESSION module
+    >>   SERVER module
 
 TODO:
     -   DATABASE module

@@ -8,6 +8,7 @@ import Http from "https";
 import Https from "https";
 import ApplicationConfigType from "data-types/application-config-type";
 import BaseModule from "./base-module";
+import SessionModule from "./session-module";
 import RouterModule from "./router-module";
 import CoreModuleInterface from "../../types/interfaces/core-module-interface";
 import GlobalData from "../global/global-data";
@@ -36,6 +37,13 @@ export default class Application extends BaseModule
     private app: Express.Application;
     private server: Http.Server;
     private appConfig: ApplicationConfigType;
+
+    /**
+     * Get App instance
+     */
+    public get App(): Express.Application {
+        return this.app;
+    }
 
     /**
      * Application-Class ctr
@@ -141,6 +149,7 @@ Server started
 
         await this.setupPugEngine(this.app);
         await this.setupMiddlewares(this.app);
+        await this.setupSession(this.app);
         await this.setupRoutes(this.app);
     }
 
@@ -411,5 +420,15 @@ Server started
 
         /* Setup Error handler middleware */
         app.use(errHandler);
+    }
+
+    /**
+     *  Setup Session module
+     */
+    private async setupSession(app: Express.Application): Promise<void> {
+        const sessionModule = new SessionModule(app);
+        await sessionModule.boot();
+
+        GlobalData.logger.info("Session initialized");
     }
 }

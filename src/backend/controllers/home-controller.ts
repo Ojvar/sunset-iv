@@ -20,8 +20,12 @@ export default class HomeController extends BaseController {
     ): Promise<void> {
         const name: string = req.params.name || "John Doe";
 
+        /* Increse visit count */
+        req.session.visitCount = (req.session.visitCount || 0) + 1;
+
         res.render("home.pug", {
             name,
+            visitCount: req.session.visitCount,
         });
     }
 

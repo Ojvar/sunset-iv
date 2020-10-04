@@ -15,7 +15,7 @@ export default class RedisHelper {
      * @param option RedisOptionType Options
      */
     constructor(options?: Redis.ClientOpts) {
-        this.clientOptions = options;
+        this.clientOptions = options || ({} as Redis.ClientOpts);
     }
 
     /**
@@ -33,12 +33,24 @@ export default class RedisHelper {
         return new Promise((resolve, reject): void => {
             this._client = Redis.createClient(this.clientOptions);
 
+            /* Setup event listeners */
             this.client.on("error", (err) => {
                 GlobalData.logger.error(JSON.stringify(err));
                 reject(err);
             });
+            this.client.on("connect", () => {
+                GlobalData.logger.info("Redis client connected");
+            });
+            this.client.on("reconnecting", () => {
+                GlobalData.logger.warn("Redis client reconnecting");
+            });
+            this.client.on("end", () => {
+                GlobalData.logger.info(
+                    "Redis client connection has been closed"
+                );
+            });
 
-            if (this.clientOptions.password) {
+            if (null != this.clientOptions.password) {
                 this.client.auth(
                     this.clientOptions.password,
                     (err: Error, reply: string) => {
