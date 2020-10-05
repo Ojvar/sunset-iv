@@ -149,4 +149,14 @@ export default class GlobalMethods {
             await MkDirP(path);
         }
     }
+
+    /**
+     * Sleep function
+     * @param timeout number Timeout
+     */
+    public static sleep(timeout: number): Promise<void> {
+        return new Promise((resolve, reject) =>
+            setTimeout(() => resolve(), timeout)
+        );
+    }
 }

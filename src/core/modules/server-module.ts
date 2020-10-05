@@ -6,8 +6,10 @@ import LoggerModule from "./logger-module";
 import EventsModule from "./events-module";
 import BaseModule from "./base-module";
 import ApplicationModule from "./application-module";
+import DatabaseModule from "./database-module";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
+import { resolve } from "path";
 
 /**
  * Server class
@@ -27,6 +29,7 @@ export default class Server extends BaseModule implements CoreModuleInterface {
         await this.loadEnvData();
         await this.initLogger();
         await this.initEvents();
+        await this.initDatabase();
         await this.initApplication();
 
         /* Raise AppInit event */
@@ -40,7 +43,8 @@ export default class Server extends BaseModule implements CoreModuleInterface {
         /* Logger module */
         GlobalData.logger = new LoggerModule();
         await GlobalData.logger.boot();
-        GlobalData.logger.info("Logger initialized");
+
+        GlobalData.logger.info("Logger Module initialized");
     }
 
     /**
@@ -49,7 +53,8 @@ export default class Server extends BaseModule implements CoreModuleInterface {
     private async initEvents(): Promise<void> {
         GlobalData.events = new EventsModule();
         await GlobalData.events.boot();
-        GlobalData.logger.info("Events initialized");
+
+        GlobalData.logger.info("Events Module initialized");
     }
 
     /**
@@ -58,7 +63,18 @@ export default class Server extends BaseModule implements CoreModuleInterface {
     private async initApplication(): Promise<void> {
         GlobalData.application = new ApplicationModule();
         await GlobalData.application.boot();
-        GlobalData.logger.info("Application initialized");
+
+        GlobalData.logger.info("Application Module initialized");
+    }
+
+    /**
+     *  Init Database
+     */
+    private async initDatabase(): Promise<void> {
+        GlobalData.db = new DatabaseModule();
+        await GlobalData.db.boot();
+
+        GlobalData.logger.info("Database Module initialized");
     }
 
     /**

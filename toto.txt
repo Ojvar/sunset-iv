@@ -9,9 +9,10 @@ DONE:
 
 DOING:
     >>   SERVER module
+    
+    >   DATABASE module
+     >>>   MONGO driver 
+        Load models
 
 TODO:
-    -   DATABASE module
     -   SERVICE module
-
-    -   MONGO driver
