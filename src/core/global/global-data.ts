@@ -22,4 +22,9 @@ export default class GlobalData {
     public static rateLimiter: RateLimit.RateLimit;
     public static csrf: CSURF.CookieOptions;
     public static upload: Multer.Multer;
+
+    /* Getters */
+    public static dbEngine(): any {
+        return GlobalData.db.engine.getEngine();
+    }
 }

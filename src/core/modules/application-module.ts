@@ -26,8 +26,7 @@ import MimeTypes from "mime-types";
 /**
  * Application class
  */
-export default class Application extends BaseModule
-    implements ICoreModule {
+export default class Application extends BaseModule implements ICoreModule {
     public readonly C_PROTO_HTTPS: string = "https";
     public readonly C_STORE_REDIS: string = "redis";
     private app: Express.Application;
@@ -391,6 +390,7 @@ Server started
 
             /* Log error */
             GlobalData.logger.error(JSON.stringify(errorData));
+            console.error(error);
 
             /* Send to client */
             switch (GlobalMethods.getRequestType(req)) {

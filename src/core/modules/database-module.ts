@@ -9,7 +9,14 @@ import MongoDbDriver from "../heleprs/database-driver/mongodb-driver";
  * Events class
  */
 export default class Database extends BaseModule implements ICoreModule {
-    private driver: IDatabaseDriver<any>;
+    private _driver: IDatabaseDriver<any>;
+
+    /**
+     * Getter for Database Driver engine
+     */
+    public get engine(): IDatabaseDriver<any> {
+        return this._driver;
+    }
 
     /**
      * Events-Class ctr
@@ -47,10 +54,10 @@ export default class Database extends BaseModule implements ICoreModule {
     private async loadMongoDbDriver(config: object): Promise<void> {
         const mongoDbConfig = config as DatabaseMongoDbConfigType;
 
-        this.driver = new MongoDbDriver();
-        await this.driver.init(mongoDbConfig.mongodb);
-        await this.driver.connect();
-        await this.driver.loadModels();
+        this._driver = new MongoDbDriver();
+        await this._driver.init(mongoDbConfig.mongodb);
+        await this._driver.connect();
+        await this._driver.loadModels();
 
         GlobalData.logger.info("MongoDB driver initialized successfully");
     }
