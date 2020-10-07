@@ -3,9 +3,7 @@
 import Express from "express";
 import Session from "express-session";
 import ConnectRedis from "connect-redis";
-import CoreModuleInterface from "interfaces/core-module-interface";
-import SessionConfigType from "data-types/session-config-type";
-import BaseModule from "./base-module";
+import BaseModule, { ICoreModule } from "./base-module";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
 import RedisHelper from "../heleprs/redis-helper";
@@ -13,7 +11,7 @@ import RedisHelper from "../heleprs/redis-helper";
 /**
  * Events class
  */
-export default class Events extends BaseModule implements CoreModuleInterface {
+export default class Events extends BaseModule implements ICoreModule {
     private app: Express.Application;
 
     /**
@@ -80,3 +78,11 @@ export default class Events extends BaseModule implements CoreModuleInterface {
         return redisStore;
     }
 }
+
+/**
+ * Session Config Type
+ */
+export type SessionConfigType = {
+    store: string;
+    options: Session.SessionOptions;
+};

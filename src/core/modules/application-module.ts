@@ -6,11 +6,9 @@ import Chalk from "chalk";
 import Express, { NextFunction } from "express";
 import Http from "https";
 import Https from "https";
-import ApplicationConfigType from "data-types/application-config-type";
-import BaseModule from "./base-module";
+import BaseModule, { ICoreModule } from "./base-module";
 import SessionModule from "./session-module";
 import RouterModule from "./router-module";
-import CoreModuleInterface from "../../types/interfaces/core-module-interface";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
 
@@ -19,10 +17,8 @@ import RateLimit from "express-rate-limit";
 import RedisStore from "rate-limit-redis";
 import BodyParser from "body-parser";
 import CookieParser from "cookie-parser";
-import ExpressErrorType from "data-types/express-error-type";
 import Helmet from "helmet";
 import CSURF from "csurf";
-import MulterConfigType from "data-types/multer-config-type";
 import Multer from "multer";
 import { v4 as uuidV4 } from "uuid";
 import MimeTypes from "mime-types";
@@ -31,7 +27,7 @@ import MimeTypes from "mime-types";
  * Application class
  */
 export default class Application extends BaseModule
-    implements CoreModuleInterface {
+    implements ICoreModule {
     public readonly C_PROTO_HTTPS: string = "https";
     public readonly C_STORE_REDIS: string = "redis";
     private app: Express.Application;
@@ -432,3 +428,40 @@ Server started
         GlobalData.logger.info("Session initialized");
     }
 }
+
+/**
+ * Application Config Type
+ */
+export type ApplicationConfigType = {
+    fullUrl: string;
+    host: string;
+    port: number;
+    url: string;
+    protocol: string;
+    isHttps: boolean;
+
+    trustedProxy: string;
+
+    throttleStore: string;
+    throttleWindow: string;
+    throttleMax: string;
+    throttleDelay: string;
+
+    useMulter: boolean;
+};
+
+/**
+ * Express error type
+ */
+export type ExpressErrorType = {
+    text: string;
+    error: string;
+};
+
+/**
+ * Multer Config Type
+ */
+export type MulterConfigType = {
+    storage: string;
+    maxSize: number;
+};

@@ -1,14 +1,13 @@
 "use strict";
 
 import Express, { RequestHandler } from "express";
-import IHash from "interfaces/hash";
-import RouterHelperInterface from "interfaces/router-helper-interface";
-import { RouterItemType } from "data-types/router-item-type";
+import IHash from "interfaces/hash-interface";
+import { IRouterHelper, RouterItemType } from "../modules/router-module";
 
 /**
  * Router class
  */
-export default class RouterHelper implements RouterHelperInterface {
+export default class RouterHelper implements IRouterHelper {
     private router: Express.Router;
     private namedRoutes: IHash<any> = {};
     private baseUrl: string;

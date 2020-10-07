@@ -7,7 +7,6 @@ import Glob from "glob";
 import Ora from "ora";
 import MkDirP from "mkdirp";
 import Express, { NextFunction } from "express";
-import CsrfConfigType from "data-types/csrf-config-type";
 
 /**
  * Global methods
@@ -160,3 +159,10 @@ export default class GlobalMethods {
         );
     }
 }
+
+/**
+ * CSRF Config Type
+ */
+export type CsrfConfigType = {
+    ignoreList: string[];
+};

@@ -1,9 +1,9 @@
 "use strict";
 
-import EventHandlerInterface from "interfaces/event-handler-interface";
+import { IEventHandler } from "../../core//modules/events-module";
 import GlobalData from "../global/global-data";
 
-export default class AppInitHandler implements EventHandlerInterface {
+export default class AppInitHandler implements IEventHandler {
     /**
      * Get handler name
      */

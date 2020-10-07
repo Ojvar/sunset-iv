@@ -1,25 +1,15 @@
 "use strict";
 
-import { DatabaseMongoDbConfigType } from "data-types/database-mongodb-config-type";
-import CoreModuleInterface from "interfaces/core-module-interface";
-import DatabaseDriverInterface from "interfaces/database-driver-interface";
+import BaseModule, { ICoreModule } from "./base-module";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
 import MongoDbDriver from "../heleprs/database-driver/mongodb-driver";
-import BaseModule from "./base-module";
-
-/**
- * Data
- */
-export type DatabaseGeneralConfig = {
-    driver?: string;
-};
 
 /**
  * Events class
  */
-export default class Events extends BaseModule implements CoreModuleInterface {
-    private driver: DatabaseDriverInterface<any>;
+export default class Database extends BaseModule implements ICoreModule {
+    private driver: IDatabaseDriver<any>;
 
     /**
      * Events-Class ctr
@@ -34,14 +24,18 @@ export default class Events extends BaseModule implements CoreModuleInterface {
      */
     public async boot(payload?: object): Promise<void> {
         const config: object = await GlobalMethods.config("core/database");
-        const globalConfig = config as {
-            driver?: string;
-        };
+        const globalConfig = config as DatabaseGeneralConfig;
 
-        if (globalConfig.driver === "mongodb") {
-            await this.loadMongoDbDriver(config);
-        } else {
-            GlobalData.logger.warn("No any database-driver selected");
+        /* Load driver */
+        const driverType: EnumDatabaseDriver = globalConfig.driver.toUpperCase() as EnumDatabaseDriver;
+        switch (driverType) {
+            case EnumDatabaseDriver.mongodb:
+                await this.loadMongoDbDriver(config);
+                break;
+
+            default:
+                GlobalData.logger.warn("No any database-driver selected");
+                break;
         }
 
         GlobalData.logger.info("Database Module initialized successfully");
@@ -56,7 +50,61 @@ export default class Events extends BaseModule implements CoreModuleInterface {
         this.driver = new MongoDbDriver();
         await this.driver.init(mongoDbConfig.mongodb);
         await this.driver.connect();
+        await this.driver.loadModels();
 
         GlobalData.logger.info("MongoDB driver initialized successfully");
     }
+}
+
+/**
+ * Database Driver enum
+ */
+export enum EnumDatabaseDriver {
+    none = "",
+    mongodb = "MONGODB",
+}
+
+/**
+ * Database MongoDB Config type
+ */
+export type DatabaseMongoDbConfigType = {
+    mongodb: object;
+};
+
+/**
+ * Database General Config type
+ */
+export type DatabaseGeneralConfig = {
+    driver?: string;
+};
+
+/**
+ * DatabaseDrive Interface
+ */
+export interface IDatabaseDriver<T> {
+    /**
+     * Init method
+     * @param config object Config data
+     */
+    init(config?: object): Promise<void>;
+
+    /**
+     * Connect method
+     */
+    connect(): Promise<void>;
+
+    /**
+     * Disonnect method
+     */
+    disconnect(): Promise<void>;
+
+    /**
+     * LoadModels method
+     */
+    loadModels(): Promise<void>;
+
+    /**
+     * LoadModels method
+     */
+    getEngine(): T;
 }

@@ -1,20 +1,18 @@
 "use strict";
 
 import DotEnv from "dotenv";
-import CoreModuleInterface from "interfaces/core-module-interface";
 import LoggerModule from "./logger-module";
 import EventsModule from "./events-module";
-import BaseModule from "./base-module";
+import BaseModule, { ICoreModule } from "./base-module";
 import ApplicationModule from "./application-module";
 import DatabaseModule from "./database-module";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
-import { resolve } from "path";
 
 /**
  * Server class
  */
-export default class Server extends BaseModule implements CoreModuleInterface {
+export default class Server extends BaseModule implements ICoreModule {
     /**
      * Server class ctr
      */
@@ -87,3 +85,11 @@ export default class Server extends BaseModule implements CoreModuleInterface {
         DotEnv.config({ path: envFilePath });
     }
 }
+
+/**
+ * Server Config Type
+ */
+export type ServerConfigType = {
+    publicFolder: string;
+    routerManifest: string;
+};

@@ -3,15 +3,16 @@
 import _ from "lodash";
 import Chalk from "chalk";
 import Mongoose from "mongoose";
-import DatabaseDriverInterface from "interfaces/database-driver-interface";
-import MongodbDriverConfigType from "data-types/mongodb-driver-config-type";
 import GlobalData from "../../global/global-data";
+import GlobalMethods from "../../global/global-methods";
+import { IDbModel } from "../db-base-model";
+import { IDatabaseDriver } from "../../modules/database-module";
 
 /**
  * MongoDB Driver
  */
 export default class MongoDbDriver
-    implements DatabaseDriverInterface<Mongoose.Mongoose> {
+    implements IDatabaseDriver<Mongoose.Mongoose> {
     private config: object = null;
     private _engine: Mongoose.Mongoose;
     private connectionUrl: string;
@@ -37,7 +38,7 @@ export default class MongoDbDriver
         this.connectionUrl = this.getConnectionUrl(mongoDBConfig);
 
         GlobalData.logger.info(
-            `MongoDB Options \n\t${JSON.stringify(this.config, null, 2)}`
+            `MongoDB Options\n${JSON.stringify(this.config, null, 2)}`
         );
         GlobalData.logger.info(
             `MongoDB Connection URL\t${Chalk.yellow(this.connectionUrl)}`
@@ -92,6 +93,29 @@ export default class MongoDbDriver
      * Load models
      */
     public async loadModels(): Promise<void> {
-        throw new Error("Method not implemented.");
+        const modelsPath = GlobalMethods.rPath(
+            __dirname,
+            "../../../backend/models/**/*"
+        );
+        const files = GlobalMethods.loadFiles(modelsPath);
+
+        for (let i = 0; i < files.length; ++i) {
+            const file: string = files[i];
+            const Model = (await import(file)).default;
+            const model: IDbModel = new Model();
+
+            await model.register(this.getEngine());
+        }
     }
 }
+
+/**
+ * Mongodb driver config Type
+ */
+export type MongodbDriverConfigType = {
+    host?: string;
+    port?: number;
+    db?: string;
+
+    options?: Mongoose.ConnectionOptions;
+};

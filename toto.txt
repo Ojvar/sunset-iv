@@ -16,3 +16,8 @@ DOING:
 
 TODO:
     -   SERVICE module
+    --  MULTI-THREAD (CAPACILITIES) module
+
+
+    >   USE SIEGE as a benchmark tool
+        https://www.npmjs.com/package/siege

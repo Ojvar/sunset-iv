@@ -1,12 +1,12 @@
 "use strict";
 
-import EventHandlerInterface from "interfaces/event-handler-interface";
+import { IEventHandler } from "../modules/events-module";
 import GlobalData from "../global/global-data";
 
 /**
  * Router Init Handler class
  */
-export default class RouterInitHandler implements EventHandlerInterface {
+export default class RouterInitHandler implements IEventHandler {
     /**
      * Get handler name
      */

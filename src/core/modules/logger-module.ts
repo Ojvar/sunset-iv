@@ -1,15 +1,14 @@
 "use strict";
 
 import Winston from "winston";
-import BaseModule from "./base-module";
+import BaseModule, { ICoreModule } from "./base-module";
 import GlobalMethods from "../global/global-methods";
 import LoggerConfig from "../../config/core/logger-config";
-import CoreModuleInterface from "../../types/interfaces/core-module-interface";
 
 /**
  * Logger class
  */
-export default class Logger extends BaseModule implements CoreModuleInterface {
+export default class Logger extends BaseModule implements ICoreModule {
     private logsFilename: string;
     private errorFilename: string;
 

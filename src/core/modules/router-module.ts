@@ -3,22 +3,19 @@
 import _ from "lodash";
 import FS from "fs";
 import Path from "path";
-import IHash from "interfaces/hash";
-import CoreModuleInterface from "interfaces/core-module-interface";
-import RouterHelperInterface from "interfaces/router-helper-interface";
-import ServerConfigType from "data-types/server-config-type";
-import { RouterItemType } from "data-types/router-item-type";
-import BaseModule from "./base-module";
+import IHash from "interfaces/hash-interface";
+import Express, { RequestHandler } from "express";
+import { ServerConfigType } from "./server-module";
+import BaseModule, { ICoreModule } from "./base-module";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
-import RouterHelper from "../heleprs/router-helper";
 import Application from "./application-module";
 
 /**
  * Router class
  */
-export default class Router extends BaseModule implements CoreModuleInterface {
-    private routers: RouterHelperInterface[] = [];
+export default class Router extends BaseModule implements ICoreModule {
+    private routers: IRouterHelper[] = [];
     private routeList: IHash<RouterItemType> = {};
 
     /**
@@ -48,8 +45,7 @@ export default class Router extends BaseModule implements CoreModuleInterface {
             const file: string = files[i];
 
             /* Load module */
-            const router = (await import(file))
-                .default as RouterHelperInterface;
+            const router = (await import(file)).default as IRouterHelper;
             const routesList: IHash<RouterItemType> = router.getRoutesList();
 
             /* Update lists */
@@ -92,4 +88,117 @@ export default class Router extends BaseModule implements CoreModuleInterface {
         const jsData: string = JSON.stringify(this.routeList, null, 2);
         FS.writeFileSync(path, jsData);
     }
+}
+
+/**
+ * Route Item DataType
+ */
+export type RouterItemType = {
+    baseUrl: string;
+    path: string;
+    alias?: string;
+    method: string;
+    keys?: {
+        name: string;
+        optional: boolean;
+        order: number;
+    };
+};
+
+/**
+ * Event handler interface
+ */
+export interface IRouterHelper {
+    /**
+     * Set baseUrl
+     * @param baseUrl string Router name
+     */
+    setBaseUrl(baseUrl: string): void;
+
+    /**
+     * Get baseUrl
+     * @return string Get the router name
+     */
+    getBaseUrl(): string;
+
+    /**
+     * Get routes list
+     */
+    getRoutesList(): IHash<RouterItemType>;
+
+    /**
+     * Return router
+     * @returns Express.IRouter router
+     */
+    getRouter(): Express.IRouter;
+
+    /**
+     * Add new route
+     * @param alias string
+     */
+    updateNamedRoutes(alias: string): void;
+
+    /**
+     * Define an action - [ALL]
+     * @param url string Url
+     * @param handlers Handlers
+     * @param alias
+     */
+    all(url: string, handlers: RequestHandler, alias?: string): void;
+
+    /**
+     * Define an action - [HEAD]
+     * @param url string Url
+     * @param handlers Handlers
+     * @param alias
+     */
+    head(url: string, handlers: RequestHandler, alias?: string): void;
+
+    /**
+     * Define an action - [GET]
+     * @param url string Url
+     * @param handlers Handlers
+     * @param alias
+     */
+    get(url: string, handlers: RequestHandler, alias?: string): void;
+
+    /**
+     * Define an action - [POST]
+     * @param url string Url
+     * @param handlers Handlers
+     * @param alias
+     */
+    post(url: string, handlers: RequestHandler, alias?: string): void;
+
+    /**
+     * Define an action - [PUT]
+     * @param url string Url
+     * @param handlers Handlers
+     * @param alias
+     */
+    put(url: string, handlers: RequestHandler, alias?: string): void;
+
+    /**
+     * Define an action - [PATCH]
+     * @param url string Url
+     * @param handlers Handlers
+     * @param alias
+     */
+    patch(url: string, handlers: RequestHandler, alias?: string): void;
+
+    /**
+     * Define an action - [DELETE]
+     * @param url string Url
+     * @param handlers Handlers
+     * @param alias
+     */
+    delete(url: string, handlers: RequestHandler, alias?: string): void;
+
+    /**
+     * Define an action - [OPTIONS]
+     * @param url string Url
+     * @param handlers Handlers
+     * @param alias
+     */
+    options(url: string, handlers: RequestHandler, alias?: string): void;
 }

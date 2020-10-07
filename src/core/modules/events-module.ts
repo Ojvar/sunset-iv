@@ -1,18 +1,16 @@
 "use strict";
 
 import _ from "lodash";
-import IHash from "interfaces/hash";
-import EventHandlerInterface from "interfaces/event-handler-interface";
-import BaseModule from "./base-module";
+import IHash from "interfaces/hash-interface";
+import BaseModule, { ICoreModule } from "./base-module";
 import GlobalMethods from "../global/global-methods";
 import GlobalData from "../global/global-data";
-import CoreModuleInterface from "interfaces/core-module-interface";
 
 /**
  * Events class
  */
-export default class Events extends BaseModule implements CoreModuleInterface {
-    private handlers: IHash<EventHandlerInterface> = {};
+export default class Events extends BaseModule implements ICoreModule {
+    private handlers: IHash<IEventHandler> = {};
 
     /**
      * Events-Class ctr
@@ -61,7 +59,7 @@ export default class Events extends BaseModule implements CoreModuleInterface {
         /* Load module */
         let EventHandler = (await import(file)).default;
 
-        const eventHandler: EventHandlerInterface = new EventHandler();
+        const eventHandler: IEventHandler = new EventHandler();
         const eventName: string = eventHandler.getName();
 
         /* Add to handlers */
@@ -77,8 +75,31 @@ export default class Events extends BaseModule implements CoreModuleInterface {
      * @param payload object Payload data
      */
     public raise(eventName: string, payload?: object): Promise<void> {
-        let handler: EventHandlerInterface = this.handlers[eventName];
+        let handler: IEventHandler = this.handlers[eventName];
 
         return handler.handle(payload);
     }
+}
+
+/**
+ * Event handler interface
+ */
+export interface IEventHandler {
+    /**
+     * Get handler name
+     */
+    getName(): string;
+
+    /**
+     * Handle method
+     * @param payload object Payload object
+     */
+    handle(payload: object): Promise<void>;
+
+    /**
+     * Boot method
+     *   Runs at loading object
+     * @param payload object Payload object
+     */
+    boot(payload: object): Promise<void>;
 }
