@@ -57,8 +57,7 @@ export default class Events extends BaseModule implements ICoreModule {
      */
     private async addHandler(file: string): Promise<void> {
         /* Load module */
-        let EventHandler = (await import(file)).default;
-
+        let EventHandler = await GlobalMethods.loadModule<any>(file);
         const eventHandler: IEventHandler = new EventHandler();
         const eventName: string = eventHandler.getName();
 

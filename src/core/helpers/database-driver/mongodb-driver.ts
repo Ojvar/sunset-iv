@@ -101,7 +101,7 @@ export default class MongoDbDriver
 
         for (let i = 0; i < files.length; ++i) {
             const file: string = files[i];
-            const Model = (await import(file)).default;
+            const Model = await GlobalMethods.loadModule<any>(file);
             const model: IDbModel = new Model();
 
             await model.register(this.getEngine());

@@ -3,7 +3,7 @@
 import BaseModule, { ICoreModule } from "./base-module";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
-import MongoDbDriver from "../heleprs/database-driver/mongodb-driver";
+import MongoDbDriver from "../helpers/database-driver/mongodb-driver";
 
 /**
  * Events class

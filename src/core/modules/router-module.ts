@@ -45,7 +45,7 @@ export default class Router extends BaseModule implements ICoreModule {
             const file: string = files[i];
 
             /* Load module */
-            const router = (await import(file)).default as IRouterHelper;
+            const router = await GlobalMethods.loadModule<IRouterHelper>(file);
             const routesList: IHash<RouterItemType> = router.getRoutesList();
 
             /* Update lists */

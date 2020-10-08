@@ -3,7 +3,7 @@
 import Chalk from "chalk";
 import Mongoose from "mongoose";
 import GlobalData from "../../core/global/global-data";
-import DbBaseModel, { IDbModel } from "../../core/heleprs/db-base-model";
+import DbBaseModel, { IDbModel } from "../../core/helpers/db-base-model";
 
 /**
  * User model interface

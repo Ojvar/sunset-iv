@@ -1,7 +1,7 @@
 "use strict";
 
 import Mongoose from "mongoose";
-import RouteHelper from "../core/heleprs/router-helper";
+import RouteHelper from "../core/helpers/router-helper";
 import HomeController from "../backend/controllers/home-controller";
 
 /* Define router */

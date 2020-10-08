@@ -6,7 +6,7 @@ import ConnectRedis from "connect-redis";
 import BaseModule, { ICoreModule } from "./base-module";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
-import RedisHelper from "../heleprs/redis-helper";
+import RedisHelper from "../helpers/redis-helper";
 
 /**
  * Events class

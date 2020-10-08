@@ -6,18 +6,15 @@ DONE:
     -   ROUTER module
     -   REDIS helper
     -   SESSION module
+    -   DATABASE module
+    -   MongoDB driver 
 
 DOING:
     >>   SERVER module
-    
-    >   DATABASE module
-     >>>   MONGO driver 
-        Load models
 
 TODO:
     -   SERVICE module
     --  MULTI-THREAD (CAPACILITIES) module
-
 
     >   USE SIEGE as a benchmark tool
         https://www.npmjs.com/package/siege

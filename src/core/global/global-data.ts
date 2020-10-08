@@ -8,6 +8,7 @@ import EventsModule from "../modules/events-module";
 import ApplicationModule from "../modules/application-module";
 import DataBaseModule from "../modules/database-module";
 import RouterModule from "../modules/router-module";
+import ServiceModule from "../modules/service-module";
 
 /**
  * Global data
@@ -18,6 +19,7 @@ export default class GlobalData {
     public static application: ApplicationModule;
     public static router: RouterModule;
     public static db: DataBaseModule;
+    public static services: ServiceModule;
 
     public static rateLimiter: RateLimit.RateLimit;
     public static csrf: CSURF.CookieOptions;

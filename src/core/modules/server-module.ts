@@ -6,6 +6,7 @@ import EventsModule from "./events-module";
 import BaseModule, { ICoreModule } from "./base-module";
 import ApplicationModule from "./application-module";
 import DatabaseModule from "./database-module";
+import ServiceModules from "./service-module";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
 
@@ -29,6 +30,7 @@ export default class Server extends BaseModule implements ICoreModule {
         await this.initEvents();
         await this.initDatabase();
         await this.initApplication();
+        await this.initServices();
 
         /* Raise AppInit event */
         GlobalData.events.raise("ServerInit");
@@ -63,6 +65,16 @@ export default class Server extends BaseModule implements ICoreModule {
         await GlobalData.application.boot();
 
         GlobalData.logger.info("Application Module initialized");
+    }
+
+    /**
+     *  Init Services
+     */
+    private async initServices(): Promise<void> {
+        GlobalData.services = new ServiceModules();
+        await GlobalData.services.boot();
+
+        GlobalData.logger.info("Service Module initialized");
     }
 
     /**

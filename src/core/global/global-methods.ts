@@ -16,6 +16,17 @@ export default class GlobalMethods {
     private static spinner: Ora.Ora;
 
     /**
+     * Load module
+     * @param path string Module path
+     */
+    public static async loadModule<T = any>(path: string): Promise<T> {
+        const Module: T = (await import(GlobalMethods.rPath(path)))
+            .default as T;
+
+        return Module;
+    }
+
+    /**
      * Return relative path by input-paraemters
      * @param args string[] Arguments
      */
@@ -99,7 +110,7 @@ export default class GlobalMethods {
 
         let result: T;
         let path = GlobalMethods.rPath(__dirname, `../../config/${config}`);
-        result = (await import(path)).default as T;
+        result = await GlobalMethods.loadModule<T>(path);
 
         if (keyPath) {
             result = _.get(result, keyPath) as T;
