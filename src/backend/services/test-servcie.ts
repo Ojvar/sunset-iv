@@ -12,7 +12,7 @@ export default class TestService implements IService {
      * Get service name
      */
     public getName(): string {
-        return "TestServiceXXX";
+        return "TestService";
     }
 
     /**
