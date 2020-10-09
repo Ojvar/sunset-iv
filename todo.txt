@@ -8,12 +8,20 @@ DONE:
     -   SESSION module
     -   DATABASE module
     -   MongoDB driver 
+    -   SERVICE module
+    -   SERVER module
 
 DOING:
-    >>   SERVER module
+    -   FrontEnd 
+        -- JS
+        -- SASS
+        -- VUEX
+        -- Global-Functions
+                --- MIX and etc
+        -- VUE 3
+            --- Composition API and ...
 
 TODO:
-    -   SERVICE module
     --  MULTI-THREAD (CAPACILITIES) module
 
     >   USE SIEGE as a benchmark tool
