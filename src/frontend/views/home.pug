@@ -1,14 +1,54 @@
-<!DOCTYPE html>
-html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport" content="width=device-width, initial-scale=1.0")
-        title Sunset-IV
-    body
-        h1 ;) Sunset-IV
-        p
-            | Welcome to OjvarLand, #{ name }
-            br
-            | If you can view VisitCount value without any problem, then congratulate ;) session module has been worked successfully
-            br
-            h3 VisitCount: #{ visitCount }
+extends ./layout/app.pug
+
+block content
+    section.hero.is-success.is-fullheight
+        .hero-head
+            header.navbar
+                .container
+                    .navbar-brand
+                        a.navbar-item
+                            img(src='https://bulma.io/images/bulma-type-white.png' alt='Logo')
+                        span.navbar-burger.burger(data-target='navbarMenuHeroC')
+                            span
+                            span
+                            span
+                    #navbarMenuHeroC.navbar-menu
+                        .navbar-end
+                            a.navbar-item.is-active
+                                | Home
+                            a.navbar-item
+                                | Examples
+                            a.navbar-item
+                                | Documentation
+                            span.navbar-item
+                                a.button.is-success.is-inverted
+                                    span.icon
+                                        i.fab.fa-github
+                                    span Download
+
+        .hero-body
+            .container.has-text-centered
+                h1 ;) Sunset-IV
+                p
+                    | Welcome to OjvarLand, #{ name }
+                    br
+                    | If you can view VisitCount value without any problem, then congratulate ;) session module has been worked successfully
+                    br
+                    h3 VisitCount: #{ visitCount }
+
+        .hero-foot
+            nav.tabs.is-boxed.is-fullwidth
+                .container
+                    ul
+                        li.is-active
+                            a Overview
+                        li
+                            a Modifiers
+                        li
+                            a Grid
+                        li
+                            a Elements
+                        li
+                            a Components
+                        li
+                            a Layout

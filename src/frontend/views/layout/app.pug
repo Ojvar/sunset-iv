@@ -1,0 +1,22 @@
+block vars
+    -var title = title || "Sunset-IV"
+
+doctype html
+html
+    head
+        title=title
+
+        meta(charset='utf-8')
+        meta(http-equiv='X-UA-Compatible' content='IE=edge')
+        meta(name='viewport' content='width=device-width, initial-scale=1')
+
+        //- link(rel='shortcut icon' href='../images/fav_icon.png' type='image/x-icon')
+
+        link(rel="stylesheet" href="css/core/app.css")
+        block styles
+
+    body
+        block content
+            #app.content
+
+        block scripts

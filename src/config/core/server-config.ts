@@ -1,6 +1,6 @@
 "use strict";
 
 export default {
-    publicFolder: "dist/public",
+    publicFolder: "public",
     routerManifest: "router-manifest.json",
 };

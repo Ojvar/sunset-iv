@@ -5,7 +5,19 @@
 "use strict";
 
 let mix = require("laravel-mix");
+require("laravel-mix-alias");
 
+/* Define aliases */
+mix.alias({
+    "@public": "public",
+    "@": "src/frontend",
+    "@js": "src/frontend/js",
+    "@sass": "src/frontend/sass",
+    "@fonts": "src/frontend/fonts",
+    "@images": "src/frontend/images",
+});
+
+/* Configuration */
 mix.webpackConfig({
     module: {
         rules: [
@@ -23,36 +35,17 @@ mix.webpackConfig({
 });
 
 /* Prepare */
+mix.setPublicPath("public");
+
 if (mix.inProduction()) {
     mix.version();
 } else {
     mix.sourceMaps(true);
-    // mix.browserSync("https://locahost:8585");
-    // mix.options({
-    //     hmrOptions: {
-    //         host: "https://localhost",
-    //         port: 8585,
-    //     },
-    // });
 }
-// mix.autoload({
-//     vue: ["Vue"],
-//     vuex: ["Vuex"],
-// });
-// mix.setPublicPath("./dist/public");
-// mix.disableSuccessNotifications();
-// mix.options({
-//     extractVueStyles: true,
-//     globalVueStyles: true,
-//     processCssUrls: true,
-//     terser: {},
-//     purifyCss: true,
-//     postCss: [require("autoprefixer")],
-//     clearConsole: false,
-//     cssNano: {
-//         // discardComments: {removeAll: true},
-//     },
-// });
 
 /* TS/JS Scripts */
-mix.js("./src/frontend/js/app/main.ts", "./dist/public/js/app");
+mix.js("./src/frontend/scripts/core/app.ts", "js/app");
+mix.js("./src/frontend/scripts/pages/main.ts", "js/pages");
+
+/* SASS/CSS */
+mix.sass("./src/frontend/sass/core/app.scss", "css/core");

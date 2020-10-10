@@ -11,6 +11,7 @@ import SessionModule from "./session-module";
 import RouterModule from "./router-module";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
+import GlobalFrontendFunctionsHelper from "../helpers/global-frontend-functions-helper";
 
 import CORS from "cors";
 import RateLimit from "express-rate-limit";
@@ -164,6 +165,19 @@ Server started
     private async setupPugEngine(app: Express.Application): Promise<void> {
         app.set("view engine", "pug");
         app.set("views", Path.resolve(__dirname, "../../frontend/views"));
+
+        /* Use global functions */
+        const globalFuncs: GlobalFrontendFunctionsHelper = new GlobalFrontendFunctionsHelper();
+        app.use(
+            (
+                req: Express.Request,
+                res: Express.Response,
+                next: NextFunction
+            ) => {
+                res.locals.Helper = globalFuncs;
+                next();
+            }
+        );
     }
 
     /**
@@ -171,6 +185,8 @@ Server started
      * @param app Express.Application App Instance
      */
     private async setupMiddlewares(app: Express.Application): Promise<void> {
+        this.app.use(Express.static("public"));
+
         await this.setupTrustedProxy(app);
         await this.setupCORS(app);
         await this.setupThrottle(app);
@@ -277,18 +293,30 @@ Server started
             cookie: true,
         });
 
-        app.use((req, res, next) => {
-            if (GlobalMethods.useCSRF(req)) {
-                next();
-            } else {
-                csrf(req, res, next);
+        app.use(
+            (
+                req: Express.Request,
+                res: Express.Response,
+                next: NextFunction
+            ) => {
+                if (GlobalMethods.useCSRF(req)) {
+                    next();
+                } else {
+                    csrf(req, res, next);
+                }
             }
-        });
+        );
 
-        app.use((req, res, next) => {
-            res.locals.csrftoken = req.csrfToken ? req.csrfToken() : "";
-            next();
-        });
+        app.use(
+            (
+                req: Express.Request,
+                res: Express.Response,
+                next: NextFunction
+            ) => {
+                res.locals.csrftoken = req.csrfToken ? req.csrfToken() : "";
+                next();
+            }
+        );
     }
 
     /**
@@ -433,6 +461,8 @@ Server started
  * Application Config Type
  */
 export type ApplicationConfigType = {
+    publicPath: string;
+
     fullUrl: string;
     host: string;
     port: number;
