@@ -10,14 +10,17 @@ html
         meta(http-equiv='X-UA-Compatible' content='IE=edge')
         meta(name='viewport' content='width=device-width, initial-scale=1')
 
-        //- link(rel='shortcut icon' href='../images/fav_icon.png' type='image/x-icon')
+    //- link(rel='shortcut icon' href='../images/fav_icon.png' type='image/x-icon')
 
-        link(rel="stylesheet" href=Helper.mix("css/core/app.css"))
-        block styles
+    link(rel="stylesheet" href=Helper.mix("css/core/app.css"))
+    block styles
 
     body
         block content
             #app.content
 
+        p
+            | Hello 
+            | #{Helper.mix("/js/core/app.js")}
         script(defer, src=Helper.mix("/js/core/app.js"))
         block scripts

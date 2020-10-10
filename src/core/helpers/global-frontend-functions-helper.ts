@@ -46,8 +46,9 @@ export default class GlobalFrontendFucntions {
             url = "/" + url;
         }
 
+        url = this.mixManifest[url] as string;
         url = `${this.appConfig.protocol}://${this.appConfig.url}${url}`;
 
-        return this.mixManifest[url] as string;
+        return url;
     }
 }

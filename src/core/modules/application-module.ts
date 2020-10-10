@@ -280,20 +280,45 @@ Server started
      * @param app Express.Applicaiton Application instance
      */
     private async setupHelmet(app: Express.Application): Promise<void> {
-        const config: any = {
-            referrerPolicy: { policy: "no-referrer" },
-            contentSecurityPolicy: {
-                directives: {
-                    defaultSrc: ["'self'"],
-                    scriptSrc: ["'self'", "example.com"],
-                    objectSrc: ["'none'"],
-                    upgradeInsecureRequests: [],
-                },
+        const referrerPolicy: any = {
+            policy: "no-referrer",
+        };
+
+        const cspConfig: any = {
+            directives: {
+                defaultSrc: [
+                    "'self'",
+                    "data: blob: filesystem: about: ws: wss: 'unsafe-inline' 'unsafe-eval' 'unsafe-dynamic'",
+                ],
+                scriptSrc: [
+                    "'self'",
+                    "data: blob: 'unsafe-inline' 'unsafe-eval'",
+                ],
+                connectSrc: ["'self'", "data: blob: 'unsafe-inline'"],
+                imgSrc: ["*", "'self'", "data: blob: 'unsafe-inline'"],
+                frameSrc: ["'self'", " data: blob:"],
+                styleSrc: ["*", "'self'", "data: blob: 'unsafe-inline'"],
+                fontSrc: ["*", "'self'", "data: blob: 'unsafe-inline'"],
+
+                // upgradeInsecureRequests: ["'self'"],
             },
+            // reportOnly: true,
+            setAllHeaders: true,
         };
 
         /* Helmet */
-        app.use(Helmet(config));
+        // app.use(Helmet(config));
+        app.use(Helmet.contentSecurityPolicy(cspConfig));
+        app.use(Helmet.dnsPrefetchControl());
+        app.use(Helmet.expectCt());
+        app.use(Helmet.frameguard());
+        app.use(Helmet.hidePoweredBy());
+        app.use(Helmet.hsts());
+        app.use(Helmet.ieNoOpen());
+        app.use(Helmet.noSniff());
+        app.use(Helmet.permittedCrossDomainPolicies());
+        app.use(Helmet.referrerPolicy(referrerPolicy));
+        app.use(Helmet.xssFilter());
     }
 
     /**
