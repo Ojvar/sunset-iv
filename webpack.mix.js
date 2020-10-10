@@ -37,14 +37,13 @@ mix.webpackConfig({
 /* Prepare */
 mix.setPublicPath("public");
 
-if (mix.inProduction()) {
-    mix.version();
-} else {
+if (!mix.inProduction()) {
     mix.sourceMaps(true);
 }
+mix.version();
 
 /* TS/JS Scripts */
-mix.js("./src/frontend/scripts/core/app.ts", "js/app");
+mix.js("./src/frontend/scripts/core/app.ts", "js/core");
 mix.js("./src/frontend/scripts/pages/main.ts", "js/pages");
 
 /* SASS/CSS */

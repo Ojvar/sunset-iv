@@ -19,6 +19,13 @@ export default class Router extends BaseModule implements ICoreModule {
     private routeList: IHash<RouterItemType> = {};
 
     /**
+     * Get collected routes list
+     */
+    public get routesList(): IHash<RouterItemType> {
+        return this.routeList;
+    }
+
+    /**
      * Events-Class ctr
      */
     constructor() {

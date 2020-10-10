@@ -12,11 +12,12 @@ html
 
         //- link(rel='shortcut icon' href='../images/fav_icon.png' type='image/x-icon')
 
-        link(rel="stylesheet" href="css/core/app.css")
+        link(rel="stylesheet" href=Helper.mix("css/core/app.css"))
         block styles
 
     body
         block content
             #app.content
 
+        script(defer, src=Helper.mix("/js/core/app.js"))
         block scripts

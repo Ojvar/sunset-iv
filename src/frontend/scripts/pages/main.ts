@@ -1,17 +1,20 @@
-"use strict";
+alert("Hello from Main class");
 
-import App from "../core/app";
+// "use strict";
 
-/**
- * Main class
- */
-export default class Main extends App {
-    /**
-     * Ctr
-     */
-    constructor() {
-        super();
+// import App from "../core/app";
 
-        alert("Hello from Main class");
-    }
-}
+
+// /**
+//  * Main class
+//  */
+// export default class Main extends App {
+//     /**
+//      * Ctr
+//      */
+//     constructor() {
+//         super();
+
+//         alert("Hello from Main class");
+//     }
+// }

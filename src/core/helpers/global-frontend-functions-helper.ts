@@ -1,5 +1,6 @@
 "use strict";
 
+import IHash from "interfaces/hash-interface";
 import Path from "path";
 import GlobalMethods from "../global/global-methods";
 import { ApplicationConfigType } from "../modules/application-module";
@@ -8,25 +9,31 @@ import { ApplicationConfigType } from "../modules/application-module";
  * GlobalFrontendFucntions class
  */
 export default class GlobalFrontendFucntions {
-    private mixManifest: any;
+    private mixManifest: IHash<string> = {};
     private appConfig: ApplicationConfigType;
 
     /**
      * Ctr
      */
     constructor() {
-        this.loadMixManifest();
+        this.prepare();
     }
 
     /**
      * Load mix-manifest data
      */
-    private async loadMixManifest() {
-        this.appConfig = await GlobalMethods.config<ApplicationConfigType>(
-            "core/application"
-        );
+    private async prepare() {
+        if (null == this.appConfig) {
+            this.appConfig = await GlobalMethods.config<ApplicationConfigType>(
+                "core/application"
+            );
+        }
 
-        this.mixManifest = (await import("../global/global-data")) as object;
+        const mixData: object = (
+            await import("../../../public/mix-manifest.json")
+        ).default;
+
+        this.mixManifest = mixData as IHash<string>;
     }
 
     /**
@@ -35,8 +42,12 @@ export default class GlobalFrontendFucntions {
      * @returns string The compiled url
      */
     public mix(url: string): string {
-        const path: string = Path.join(this.appConfig.publicPath, url);
+        if (!url.startsWith("/")) {
+            url = "/" + url;
+        }
 
-        return this.mixManifest[path] as string;
+        url = `${this.appConfig.protocol}://${this.appConfig.url}${url}`;
+
+        return this.mixManifest[url] as string;
     }
 }

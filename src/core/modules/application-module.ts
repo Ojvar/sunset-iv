@@ -280,8 +280,20 @@ Server started
      * @param app Express.Applicaiton Application instance
      */
     private async setupHelmet(app: Express.Application): Promise<void> {
+        const config: any = {
+            referrerPolicy: { policy: "no-referrer" },
+            contentSecurityPolicy: {
+                directives: {
+                    defaultSrc: ["'self'"],
+                    scriptSrc: ["'self'", "example.com"],
+                    objectSrc: ["'none'"],
+                    upgradeInsecureRequests: [],
+                },
+            },
+        };
+
         /* Helmet */
-        app.use(Helmet());
+        app.use(Helmet(config));
     }
 
     /**

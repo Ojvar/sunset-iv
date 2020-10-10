@@ -4,5 +4,5 @@ public/*
 storage
 logs
 .log
-.env
+*.env
 *.pem
