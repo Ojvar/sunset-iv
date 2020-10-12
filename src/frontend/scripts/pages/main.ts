@@ -1,20 +1,28 @@
-alert("Hello from Main class");
+"use strict";
 
-// "use strict";
+import App from "../core/app";
+// import { createApp } from "vue";
 
-// import App from "../core/app";
+/**
+ * MainPage class
+ */
+export default class MainPage extends App {
+    /**
+     * Ctr
+     */
+    constructor() {
+        super();
+        this.init();
+    }
 
+    /**
+     * Init vue
+     */
+    private init(): void {
+        const app = createApp({});
+        // app.mount("#app");
+    }
+}
 
-// /**
-//  * Main class
-//  */
-// export default class Main extends App {
-//     /**
-//      * Ctr
-//      */
-//     constructor() {
-//         super();
-
-//         alert("Hello from Main class");
-//     }
-// }
+/* Create a new instance */
+new MainPage();

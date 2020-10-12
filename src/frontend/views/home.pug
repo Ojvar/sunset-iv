@@ -1,7 +1,7 @@
 extends ./layout/app.pug
 
 block content
-    section.hero.is-success.is-fullheight
+    section.hero.is-info.is-fullheight
         .hero-head
             header.navbar
                 .container
@@ -32,28 +32,17 @@ block content
                 p
                     | Welcome to OjvarLand, #{ name }
                     br
-                    | If you can view VisitCount value without any problem, then congratulate ;) session module has been worked successfully
+                    | If you can view VisitCount value without any problem, congratulate ;) session module has been worked successfully
                     br
                     h3 VisitCount: #{ visitCount }
 
         .hero-foot
-            nav.tabs.is-boxed.is-fullwidth
+            nav.tabs
                 .container
                     ul
                         li.is-active
                             a Overview
                         li
                             a Modifiers
-                        li
-                            a Grid
-                        li
-                            a Elements
-                        li
-                            a Components
-                        li
-                            a Layout
-
 block scripts
-    script.
-        alert('asdfasdf')
-    //- script(defer, src="/js/pages/main.js")
+    script(defer, src="/js/pages/main.js")

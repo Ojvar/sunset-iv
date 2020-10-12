@@ -19,8 +19,6 @@ html
         block content
             #app.content
 
-        p
-            | Hello 
-            | #{Helper.mix("/js/core/app.js")}
+        script(defer, src="https://unpkg.com/vue@next")
         script(defer, src=Helper.mix("/js/core/app.js"))
         block scripts
