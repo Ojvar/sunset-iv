@@ -278,44 +278,30 @@ Server started
      * @param app Express.Applicaiton Application instance
      */
     private async setupHelmet(app: Express.Application): Promise<void> {
-        const referrerPolicy: any = {
-            policy: "no-referrer",
-        };
-
-        const cspConfig: any = {
-            directives: {
-                defaultSrc: [
-                    "'self'",
-                    "data: blob: filesystem: about: ws: wss: 'unsafe-inline' 'unsafe-eval' 'unsafe-dynamic'",
-                ],
-                scriptSrc: [
-                    "'self'",
-                    "data: blob: 'unsafe-inline' 'unsafe-eval'",
-                ],
-                connectSrc: ["'self'", "data: blob: 'unsafe-inline'"],
-                imgSrc: ["*", "'self'", "data: blob: 'unsafe-inline'"],
-                frameSrc: ["'self'", " data: blob:"],
-                styleSrc: ["*", "'self'", "data: blob: 'unsafe-inline'"],
-                fontSrc: ["*", "'self'", "data: blob: 'unsafe-inline'"],
-
-                // upgradeInsecureRequests: ["'self'"],
-            },
-            // reportOnly: true,
-            setAllHeaders: true,
-        };
+        const helmetConfig: any = await GlobalMethods.config("core/helmet");
 
         /* Helmet */
         // app.use(Helmet(config));
-        app.use(Helmet.contentSecurityPolicy(cspConfig));
-        app.use(Helmet.dnsPrefetchControl());
-        app.use(Helmet.expectCt());
-        app.use(Helmet.frameguard());
+        app.use(
+            Helmet.contentSecurityPolicy(
+                helmetConfig.contentSecurityPolicy || {}
+            )
+        );
+        app.use(
+            Helmet.dnsPrefetchControl(helmetConfig.dnsPrefetchControl || {})
+        );
+        app.use(Helmet.expectCt(helmetConfig.expectCt || {}));
+        app.use(Helmet.frameguard(helmetConfig.frameguard || {}));
         app.use(Helmet.hidePoweredBy());
-        app.use(Helmet.hsts());
+        app.use(Helmet.hsts(helmetConfig.hsts || {}));
         app.use(Helmet.ieNoOpen());
         app.use(Helmet.noSniff());
-        app.use(Helmet.permittedCrossDomainPolicies());
-        app.use(Helmet.referrerPolicy(referrerPolicy));
+        app.use(
+            Helmet.permittedCrossDomainPolicies(
+                helmetConfig.permittedCrossDomainPolicies || {}
+            )
+        );
+        app.use(Helmet.referrerPolicy(helmetConfig.referrerPolicy || {}));
         app.use(Helmet.xssFilter());
     }
 
