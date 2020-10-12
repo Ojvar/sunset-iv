@@ -29,9 +29,9 @@ export default class GlobalFrontendFucntions {
             );
         }
 
-        const mixData: object = (
-            await import("../../../public/mix-manifest.json")
-        ).default;
+        const mixData: object = await GlobalMethods.loadModule(
+            "public/mix-manifest.json"
+        );
 
         this.mixManifest = mixData as IHash<string>;
     }

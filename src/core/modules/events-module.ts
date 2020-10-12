@@ -37,8 +37,10 @@ export default class Events extends BaseModule implements ICoreModule {
         const globalEventHandlersPath: string = `${__dirname}/../event-handlers/**/*`;
 
         /* Load handlers */
-        let eventHandlers = GlobalMethods.loadFiles(globalEventHandlersPath);
-        const userEventHandlers = GlobalMethods.loadFiles(
+        const eventHandlers = await GlobalMethods.loadFiles(
+            globalEventHandlersPath
+        );
+        const userEventHandlers = await GlobalMethods.loadFiles(
             userEventHandlersPath
         );
 

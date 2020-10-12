@@ -7,6 +7,7 @@ import Glob from "glob";
 import Ora from "ora";
 import MkDirP from "mkdirp";
 import Express, { NextFunction } from "express";
+import { ServerConfigType } from "../modules/server-module";
 
 /**
  * Global methods
@@ -14,6 +15,7 @@ import Express, { NextFunction } from "express";
 export default class GlobalMethods {
     public static readonly C_ENV_PRODUCTION: string = "production";
     private static spinner: Ora.Ora;
+    private static serverConfig: ServerConfigType;
 
     /**
      * Load module
@@ -46,12 +48,20 @@ export default class GlobalMethods {
      *  User can filter by regexp
      * @param pattern String Folder path
      * @param optinos Glob.IOoptions options
+     * @param filterFnc Function Filter function
      */
-    public static loadFiles(
+    public static async loadFiles(
         pattern: string,
-        options?: Glob.IOptions
-    ): string[] {
-        return Glob.sync(pattern, options);
+        options?: Glob.IOptions,
+        filterFnc: Function = this.filterIgnoredFiles
+    ): Promise<string[]> {
+        let files: string[] = Glob.sync(pattern, options);
+
+        if (null !== filterFnc) {
+            files = await filterFnc(files);
+        }
+
+        return files;
     }
 
     /**
@@ -168,6 +178,31 @@ export default class GlobalMethods {
         return new Promise((resolve, reject) =>
             setTimeout(() => resolve(), timeout)
         );
+    }
+
+    /**
+     * Filter ignored files
+     * @param files string[] Filter ignored files
+     */
+    public static async filterIgnoredFiles(files: string[]): Promise<string[]> {
+        if (null == GlobalMethods.serverConfig) {
+            await GlobalMethods.loadServerConfig();
+        }
+
+        files = files.filter((file: string): boolean => {
+            const ext = Path.extname(file);
+
+            return GlobalMethods.serverConfig.acceptableTypes.indexOf(ext) > -1;
+        });
+
+        return files;
+    }
+
+    /**
+     * Load Server-Config file
+     */
+    private static async loadServerConfig(): Promise<void> {
+        GlobalMethods.serverConfig = await GlobalMethods.config("core/server");
     }
 }
 

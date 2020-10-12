@@ -12,6 +12,8 @@ DONE:
     -   SERVER module
 
 DOING:
+    >   package.json -> command to Create routes-manifest file
+
     -   FrontEnd 
         -- JS
         -- SASS

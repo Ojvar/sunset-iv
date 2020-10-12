@@ -52,7 +52,7 @@ export default class Service extends BaseModule implements ICoreModule {
         serviceTag: string,
         servicePath: string
     ): Promise<void> {
-        const files: string[] = GlobalMethods.loadFiles(servicePath);
+        const files: string[] = await GlobalMethods.loadFiles(servicePath);
 
         GlobalData.logger.info(
             `Loading services from directory\n\t\t${Chalk.yellow(servicePath)}`

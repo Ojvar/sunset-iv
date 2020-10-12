@@ -19,5 +19,5 @@ export interface ICoreModule {
      *   Runs at loading object
      * @param payload object Payload object
      */
-    boot(payload?: object): Promise<void>;
+    boot(payload?: any): Promise<void>;
 }

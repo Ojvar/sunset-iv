@@ -24,16 +24,22 @@ export default class Server extends BaseModule implements ICoreModule {
     /**
      * Boot
      */
-    public async boot(): Promise<void> {
+    public async boot(payload?: IServerBoot): Promise<void> {
         await this.loadEnvData();
         await this.initLogger();
         await this.initEvents();
-        await this.initDatabase();
-        await this.initApplication();
-        await this.initServices();
 
-        /* Raise AppInit event */
-        GlobalData.events.raise("ServerInit");
+        /* Just create a manifest file */
+        if (payload === IServerBoot.CREATE_ROUTES_MANIFEST) {
+            await this.initApplication();
+        } else if (payload == IServerBoot.RUN_SERVER) {
+            await this.initDatabase();
+            await this.initApplication();
+            await this.initServices();
+
+            /* Raise AppInit event */
+            GlobalData.events.raise("ServerInit");
+        }
     }
 
     /**
@@ -96,6 +102,13 @@ export default class Server extends BaseModule implements ICoreModule {
 
         DotEnv.config({ path: envFilePath });
     }
+
+    /**
+     * Create routes-manifest file
+     */
+    public async createRoutesManifrestFile(): Promise<void> {
+        await GlobalData.router.createManifestFile();
+    }
 }
 
 /**
@@ -104,4 +117,13 @@ export default class Server extends BaseModule implements ICoreModule {
 export type ServerConfigType = {
     publicFolder: string;
     routerManifest: string;
+    acceptableTypes: string[];
 };
+
+/**
+ * Server boot enum
+ */
+export enum IServerBoot {
+    RUN_SERVER = 1,
+    CREATE_ROUTES_MANIFEST = 2,
+}
