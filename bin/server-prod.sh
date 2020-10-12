@@ -3,7 +3,7 @@
 echo "Sunset server starting"
 
 echo "Sunset server:: Generating Routes manifest file"
-ENV_FILE=.prod.env npm run routes-manifest  && \
+ENV_FILE=.prod.env npm run routes-manifest 
 
 echo "Sunset server:: Generating JS/CSS/... files"
 npm run prod
