@@ -10,9 +10,9 @@ DONE:
     -   MongoDB driver 
     -   SERVICE module
     -   SERVER module
+    -   package.json -> command to Create routes-manifest file
 
 DOING:
-    >   package.json -> command to Create routes-manifest file
 
     -   FrontEnd 
         -- JS

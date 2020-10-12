@@ -93,12 +93,10 @@ Server started
 
         if (useHttps) {
             const serverPKeyPath: string = GlobalMethods.rPath(
-                __dirname,
-                "../../ssl/server-key.pem"
+                "private/ssl/server-key.pem"
             );
             const serverCertPath: string = GlobalMethods.rPath(
-                __dirname,
-                "../../ssl/server-cert.pem"
+                "private/ssl/server-cert.pem"
             );
 
             /* Read ssl data */
