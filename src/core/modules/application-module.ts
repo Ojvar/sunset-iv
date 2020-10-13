@@ -162,7 +162,7 @@ Server started
      */
     private async setupPugEngine(app: Express.Application): Promise<void> {
         app.set("view engine", "pug");
-        app.set("views", Path.resolve(__dirname, "../../frontend/views"));
+        app.set("views", GlobalMethods.rPath("views"));
 
         /* Use global functions */
         const globalFuncs: GlobalFrontendFunctionsHelper = new GlobalFrontendFunctionsHelper();
