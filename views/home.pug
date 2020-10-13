@@ -14,17 +14,8 @@ block content
                             span
                     #navbarMenuHeroC.navbar-menu
                         .navbar-end
-                            a.navbar-item.is-active
+                            a.navbar-item.is-active(href=Helper.route("home.index", { name }))
                                 | Home
-                            a.navbar-item
-                                | Examples
-                            a.navbar-item
-                                | Documentation
-                            span.navbar-item
-                                a.button.is-success.is-inverted
-                                    span.icon
-                                        i.fab.fa-github
-                                    span Download
 
         .hero-body
             .container.has-text-centered
