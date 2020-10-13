@@ -43,6 +43,7 @@ export default class Events extends BaseModule implements ICoreModule {
 
         /* Init Session */
         let sessionStore: Session.Store | Session.MemoryStore;
+
         switch (config.store) {
             case "redis":
                 sessionStore = await this.createRedisSessionStore();
@@ -50,7 +51,7 @@ export default class Events extends BaseModule implements ICoreModule {
 
             case "memory":
             default:
-                sessionStore = null;
+                sessionStore = new Session.MemoryStore();
                 break;
         }
 

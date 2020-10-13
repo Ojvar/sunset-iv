@@ -1,7 +1,7 @@
 "use strict";
 
 import Chalk from "chalk";
-import IHash from "interfaces/hash-interface";
+import IHash from "../../types/interfaces/hash-interface";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
 import BaseModule, { ICoreModule } from "./base-module";
@@ -73,7 +73,8 @@ export default class Service extends BaseModule implements ICoreModule {
         /* Try to Boot services */
         const values = Object.values(this.services);
         for (let i = 0; i < values.length; i++) {
-            const service: IService = values[i].service;
+            const value = values[i] as ServiceKeyType;
+            const service: IService = value.service;
 
             /* Try to boot service */
             await service.boot();

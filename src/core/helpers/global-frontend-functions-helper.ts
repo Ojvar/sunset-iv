@@ -1,16 +1,15 @@
 "use strict";
 
-import IHash from "interfaces/hash-interface";
-import Path from "path";
 import GlobalMethods from "../global/global-methods";
 import { ApplicationConfigType } from "../modules/application-module";
+import IHash from "../../types/interfaces/hash-interface";
 
 /**
  * GlobalFrontendFucntions class
  */
 export default class GlobalFrontendFucntions {
     private mixManifest: IHash<string> = {};
-    private appConfig: ApplicationConfigType;
+    private appConfig: ApplicationConfigType = {} as ApplicationConfigType;
 
     /**
      * Ctr
@@ -23,17 +22,22 @@ export default class GlobalFrontendFucntions {
      * Load mix-manifest data
      */
     private async prepare() {
-        if (null == this.appConfig) {
-            this.appConfig = await GlobalMethods.config<ApplicationConfigType>(
-                "core/application"
-            );
-        }
+        await this.loadAppConfig();
 
         const mixData: object = await GlobalMethods.loadModule(
             "public/mix-manifest.json"
         );
 
         this.mixManifest = mixData as IHash<string>;
+    }
+
+    /**
+     * Load application-config data
+     */
+    private async loadAppConfig(): Promise<void> {
+        this.appConfig = await GlobalMethods.config<ApplicationConfigType>(
+            "core/application"
+        );
     }
 
     /**

@@ -4,7 +4,7 @@
 
 "use strict";
 
-let mix = require("laravel-mix");
+const mix = require("laravel-mix");
 require("laravel-mix-alias");
 
 /* Define aliases */
@@ -15,6 +15,7 @@ mix.alias({
     "@sass": "src/frontend/sass",
     "@fonts": "src/frontend/fonts",
     "@images": "src/frontend/images",
+    "@views": "views",
 });
 
 /* Configuration */

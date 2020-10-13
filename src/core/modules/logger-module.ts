@@ -9,8 +9,8 @@ import LoggerConfig from "../../config/core/logger-config";
  * Logger class
  */
 export default class Logger extends BaseModule implements ICoreModule {
-    private logsFilename: string;
-    private errorFilename: string;
+    private logsFilename: string = "";
+    private errorFilename: string = "";
 
     /**
      * Logger class ctr

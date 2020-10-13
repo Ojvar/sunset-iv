@@ -1,7 +1,7 @@
 "use strict";
 
 import _ from "lodash";
-import IHash from "interfaces/hash-interface";
+import IHash from "../../types/interfaces/hash-interface";
 import BaseModule, { ICoreModule } from "./base-module";
 import GlobalMethods from "../global/global-methods";
 import GlobalData from "../global/global-data";
@@ -95,12 +95,12 @@ export interface IEventHandler {
      * Handle method
      * @param payload object Payload object
      */
-    handle(payload: object): Promise<void>;
+    handle(payload?: object): Promise<void>;
 
     /**
      * Boot method
      *   Runs at loading object
      * @param payload object Payload object
      */
-    boot(payload: object): Promise<void>;
+    boot(payload?: object): Promise<void>;
 }

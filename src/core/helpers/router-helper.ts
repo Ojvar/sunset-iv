@@ -1,7 +1,7 @@
 "use strict";
 
 import Express, { RequestHandler } from "express";
-import IHash from "interfaces/hash-interface";
+import IHash from "../../types/interfaces/hash-interface";
 import { IRouterHelper, RouterItemType } from "../modules/router-module";
 
 /**

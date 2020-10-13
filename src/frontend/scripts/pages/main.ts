@@ -1,6 +1,7 @@
 "use strict";
 
 import App from "../core/app";
+import * as V from "vue";
 
 /**
  * MainPage class
@@ -17,7 +18,10 @@ export default class MainPage extends App {
     /**
      * Init vue
      */
-    private init(): void {}
+    private init(): void {
+        // const vueApp = createApp({});
+        // vueApp.mount("#app");
+    }
 }
 
 /* Create a new instance */

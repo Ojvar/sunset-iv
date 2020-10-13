@@ -19,13 +19,16 @@ export default class HomeController extends BaseController {
         next: NextFunction
     ): Promise<void> {
         const name: string = req.params.name || "John Doe";
+        const session: any = req.session || {};
 
-        /* Increse visit count */
-        req.session.visitCount = (req.session.visitCount || 0) + 1;
+        if (session) {
+            /* Increse visit count */
+            session.visitCount = (session.visitCount || 0) + 1;
+        }
 
         res.render("home.pug", {
             name,
-            visitCount: req.session.visitCount,
+            visitCount: session.visitCount,
         });
     }
 

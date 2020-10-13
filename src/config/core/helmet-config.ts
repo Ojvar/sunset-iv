@@ -7,7 +7,11 @@ export default {
                 "'self'",
                 "data: blob: filesystem: about: ws: wss: 'unsafe-inline' 'unsafe-eval' 'unsafe-dynamic'",
             ],
-            scriptSrc: ["'self'", "data: blob: 'unsafe-inline' 'unsafe-eval'"],
+            scriptSrc: [
+                "'self'",
+                "data: blob: 'unsafe-inline' 'unsafe-eval'",
+                "https://unpkg.com",
+            ],
             connectSrc: ["'self'", "data: blob: 'unsafe-inline'"],
             imgSrc: ["*", "'self'", "data: blob: 'unsafe-inline'"],
             frameSrc: ["'self'", " data: blob:"],

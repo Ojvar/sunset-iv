@@ -3,8 +3,8 @@
 import _ from "lodash";
 import FS from "fs";
 import Path from "path";
-import IHash from "interfaces/hash-interface";
 import Express, { RequestHandler } from "express";
+import IHash from "../../types/interfaces/hash-interface";
 import { ServerConfigType } from "./server-module";
 import BaseModule, { ICoreModule } from "./base-module";
 import GlobalData from "../global/global-data";

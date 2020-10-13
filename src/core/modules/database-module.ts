@@ -9,12 +9,16 @@ import MongoDbDriver from "../helpers/database-driver/mongodb-driver";
  * Events class
  */
 export default class Database extends BaseModule implements ICoreModule {
-    private _driver: IDatabaseDriver<any>;
+    private _driver: IDatabaseDriver<any> | null = null;
 
     /**
      * Getter for Database Driver engine
      */
     public get engine(): IDatabaseDriver<any> {
+        if (null == this._driver) {
+            throw new Error("Null engine");
+        }
+
         return this._driver;
     }
 
@@ -34,7 +38,8 @@ export default class Database extends BaseModule implements ICoreModule {
         const globalConfig = config as DatabaseGeneralConfig;
 
         /* Load driver */
-        const driverType: EnumDatabaseDriver = globalConfig.driver.toUpperCase() as EnumDatabaseDriver;
+        const driver: string = globalConfig.driver || "";
+        const driverType: EnumDatabaseDriver = driver.toUpperCase() as EnumDatabaseDriver;
         switch (driverType) {
             case EnumDatabaseDriver.mongodb:
                 await this.loadMongoDbDriver(config);

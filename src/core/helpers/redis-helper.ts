@@ -7,7 +7,7 @@ import GlobalData from "../global/global-data";
  * Redis helper class
  */
 export default class RedisHelper {
-    private _client: Redis.RedisClient;
+    private _client: Redis.RedisClient | null = null;
     private clientOptions: Redis.ClientOpts;
 
     /**
@@ -23,6 +23,10 @@ export default class RedisHelper {
      * @returns Redis.RedisClient redis client
      */
     get client(): Redis.RedisClient {
+        if (null == this._client) {
+            throw new Error("Null client");
+        }
+
         return this._client;
     }
 
@@ -51,16 +55,23 @@ export default class RedisHelper {
             });
 
             if (null != this.clientOptions.password) {
-                this.client.auth(
-                    this.clientOptions.password,
-                    (err: Error, reply: string) => {
+                /* Callback function */
+                const cb: Redis.Callback<any> = (
+                    err: Error | null,
+                    data: any
+                ) => {
+                    if (err) {
                         GlobalData.logger.error(JSON.stringify(err));
                         reject(err);
+                    } else {
+                        resolve();
                     }
-                );
-            }
+                };
 
-            resolve();
+                this.client.auth(this.clientOptions.password, cb);
+            } else {
+                resolve();
+            }
         });
     }
 
@@ -80,7 +91,7 @@ export default class RedisHelper {
     public selectDB(db: number | string): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             /* Callback function */
-            const cb: Redis.Callback<string> = (err: Error, data: string) => {
+            const cb: Redis.Callback<any> = (err: Error | null, data: any) => {
                 if (err) {
                     GlobalData.logger.error(JSON.stringify(err));
                     reject(err);
@@ -89,7 +100,7 @@ export default class RedisHelper {
                 }
             };
 
-            this._client.select(db, cb);
+            this.client.select(db, cb);
         });
     }
 
@@ -99,7 +110,7 @@ export default class RedisHelper {
     public send(cmd: string, ...args: string[]): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             /* Callback function */
-            const cb: Redis.Callback<string> = (err: Error, data: string) => {
+            const cb: Redis.Callback<any> = (err: Error | null, data: any) => {
                 if (err) {
                     GlobalData.logger.error(JSON.stringify(err));
                     reject(err);
@@ -109,7 +120,7 @@ export default class RedisHelper {
             };
 
             /* Send command */
-            this._client.sendCommand(cmd, args, cb);
+            this.client.sendCommand(cmd, args, cb);
         });
     }
 }

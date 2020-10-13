@@ -1,7 +1,7 @@
 "use strict";
 
 import FS from "fs";
-import Path from "path";
+import Crypto from "crypto";
 import Chalk from "chalk";
 import Express, { NextFunction } from "express";
 import Http from "https";
@@ -30,14 +30,14 @@ import MimeTypes from "mime-types";
 export default class Application extends BaseModule implements ICoreModule {
     public readonly C_PROTO_HTTPS: string = "https";
     public readonly C_STORE_REDIS: string = "redis";
-    private app: Express.Application;
-    private server: Http.Server;
-    private appConfig: ApplicationConfigType;
+    private app: Express.Application = {} as Express.Application;
+    private server: Http.Server = {} as Http.Server;
+    private appConfig: ApplicationConfigType = {} as ApplicationConfigType;
 
     /**
      * Get App instance
      */
-    public get App(): Express.Application {
+    public get App(): Express.Application | undefined {
         return this.app;
     }
 
@@ -280,7 +280,18 @@ Server started
     private async setupHelmet(app: Express.Application): Promise<void> {
         const helmetConfig: any = await GlobalMethods.config("core/helmet");
 
-        /* Helmet */
+        /* Inline scripts key-generator */
+        app.use(
+            (
+                req: Express.Request,
+                res: Express.Response,
+                next: NextFunction
+            ) => {
+                res.locals.nonce = Crypto.randomBytes(16).toString("hex");
+                next();
+            }
+        );
+
         // app.use(Helmet(config));
         app.use(
             Helmet.contentSecurityPolicy(
@@ -506,7 +517,7 @@ export type ApplicationConfigType = {
  */
 export type ExpressErrorType = {
     text: string;
-    error: string;
+    error?: any;
 };
 
 /**
