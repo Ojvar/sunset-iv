@@ -5,6 +5,7 @@ import IHash from "../../types/interfaces/hash-interface";
 import GlobalData from "../global/global-data";
 import GlobalMethods from "../global/global-methods";
 import BaseModule, { ICoreModule } from "./base-module";
+import { IServerBoot } from "./server-module";
 
 /**
  * Events class
@@ -95,8 +96,12 @@ export default class Service extends BaseModule implements ICoreModule {
         );
 
         /* Load service and create new instance */
+        const path: string = GlobalMethods.rPath(
+            "src/backend/services/test-servcie.ts"
+        );
+
         const Module = await GlobalMethods.loadModule(file);
-        const newService: IService = new Module() as IService;
+        const newService: IService = new Module();
 
         /* Create new service item */
         let key: string = newService.getName();

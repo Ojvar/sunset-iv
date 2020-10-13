@@ -27,7 +27,8 @@ export default class RouterInitHandler implements IEventHandler {
      * @param payload Object Payload data
      */
     public async handle(payload: object): Promise<void> {
-        GlobalData.router.createManifestFile();
+        await GlobalData.router.createManifestFile();
+        
         GlobalData.logger.info(
             "RouterInit Handler\n\t\t> Router initialized successfully"
         );

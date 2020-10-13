@@ -11,9 +11,7 @@ import DbBaseModel, { IDbModel } from "../../core/helpers/db-base-model";
 export interface IUserModel extends Mongoose.Document {
     name: string;
     pwd: string;
-
     activated_at: Date;
-
     created_at: Date;
     created_by?: Mongoose.Types.ObjectId;
 }

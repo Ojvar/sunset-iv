@@ -164,14 +164,16 @@ Server started
         app.set("view engine", "pug");
         app.set("views", GlobalMethods.rPath("views"));
 
-        /* Use global functions */
         const globalFuncs: GlobalFrontendFunctionsHelper = new GlobalFrontendFunctionsHelper();
+
         app.use(
             (
                 req: Express.Request,
                 res: Express.Response,
                 next: NextFunction
             ) => {
+                globalFuncs.prepare();
+
                 res.locals.Helper = globalFuncs;
                 next();
             }

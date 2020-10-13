@@ -10,23 +10,26 @@ import { ApplicationConfigType } from "../modules/application-module";
 export default class GlobalFrontendFucntions {
     private mixManifest: IHash<string> = {};
     private appConfig: ApplicationConfigType = {} as ApplicationConfigType;
-    private routesData: IHash<RouteDataType> = {};
+    private routesData: IHash<RouteDataType> | undefined;
 
     /**
      * Ctr
      */
-    constructor() {
-        this.prepare();
-    }
+    constructor() {}
 
     /**
      * Load mix-manifest data
      */
-    private async prepare() {
-        await this.loadAppConfig();
-        await this.loadRoutesData();
+    public async prepare() {
+        if (this.appConfig.publicPath == null) {
+            await this.loadAppConfig();
+        }
 
-        const mixData: object = await GlobalMethods.loadModule(
+        if (undefined == this.routesData) {
+            await this.loadRoutesData();
+        }
+
+        const mixData: object = await GlobalMethods.loadModule<any>(
             "public/mix-manifest.json"
         );
 
@@ -41,9 +44,10 @@ export default class GlobalFrontendFucntions {
             this.appConfig.publicPath,
             "router-manifest.json"
         );
-        this.routesData = (await GlobalMethods.loadModule(path)) as IHash<
-            RouteDataType
-        >;
+
+        this.routesData = await GlobalMethods.loadModule<IHash<RouteDataType>>(
+            path
+        );
     }
 
     /**
@@ -62,7 +66,9 @@ export default class GlobalFrontendFucntions {
      * @returns string The Route path
      */
     public route(routeName: string, args: IHash<string | number> = {}): string {
-        const route: RouteDataType = this.routesData[routeName];
+        const route: RouteDataType = (this.routesData as IHash<RouteDataType>)[
+            routeName
+        ];
 
         /* Perpare */
         let keys: Array<RouteArgType> = route.keys;
@@ -91,7 +97,9 @@ export default class GlobalFrontendFucntions {
      * @returns string The Route data
      */
     public routeData(routeName: string): RouteDataType {
-        let route: RouteDataType = this.routesData[routeName];
+        let route: RouteDataType = (this.routesData as IHash<RouteDataType>)[
+            routeName
+        ];
 
         return route;
     }
