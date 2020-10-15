@@ -43,7 +43,7 @@
         "rate-limit-redis": "^2.0.0",
         "redis": "^3.0.2",
         "uuid": "^8.3.1",
-        "vue": "^2.6.12",
+        "vue": "^3.0.0",
         "winston": "^3.3.3"
     },
     "devDependencies": {

@@ -24,6 +24,11 @@ mix.webpackConfig({
     module: {
         rules: [
             {
+                test: /\.vue$/,
+                loader: "vue-loader",
+                exclude: /node_modules/,
+            },
+            {
                 test: /\.tsx?$/,
                 loader: "ts-loader",
                 exclude: /node_modules/,
@@ -47,7 +52,7 @@ mix.version();
 
 /* TS/JS Scripts */
 mix.js("./src/frontend/scripts/core/app.ts", "js/core");
-mix.js("./src/frontend/scripts/pages/main.ts", "js/pages");
+mix.js("./src/frontend/scripts/pages/home.ts", "js/pages");
 
 /* SASS/CSS */
 mix.sass("./src/frontend/sass/core/app.scss", "css/core");
