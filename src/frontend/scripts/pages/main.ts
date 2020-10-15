@@ -1,12 +1,11 @@
 "use strict";
 
 import App from "../core/app";
-import * as V from "vue";
 
 /**
  * MainPage class
  */
-export default class MainPage extends App {
+export class MainPage extends App {
     /**
      * Ctr
      */
@@ -19,10 +18,9 @@ export default class MainPage extends App {
      * Init vue
      */
     private init(): void {
-        // const vueApp = createApp({});
-        // vueApp.mount("#app");
+        console.log("Hello from index page");
     }
 }
 
 /* Create a new instance */
-new MainPage();
+export default new MainPage();

@@ -4,6 +4,7 @@
 
 "use strict";
 
+const Path = require("path");
 const mix = require("laravel-mix");
 require("laravel-mix-alias");
 
@@ -31,7 +32,8 @@ mix.webpackConfig({
         ],
     },
     resolve: {
-        extensions: ["*", ".js", ".jsx", ".vue", ".ts", ".tsx"],
+        extensions: [".js", ".jsx", ".tsx", ".ts", ".json", ".html", ".vue"],
+        modules: [Path.resolve("./src"), Path.resolve("./node_modules")],
     },
 });
 
