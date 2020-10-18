@@ -1,6 +1,6 @@
 "use strict";
 
-import { createApp } from "vue";
+import Vue from "vue";
 import App from "../core/app";
 
 /**
@@ -20,21 +20,6 @@ export class MainPage extends App {
      */
     private init(): void {
         console.log("Hello from index page");
-
-        const app = createApp({
-            data: () => ({
-                name: "ali",
-                counter: 0,
-            }),
-
-            methods: {
-                inc() {
-                    this.counter++;
-                },
-            },
-        });
-
-        app.mount("#app");
     }
 }
 

@@ -10,43 +10,43 @@ require("laravel-mix-alias");
 
 /* Define aliases */
 mix.alias({
-    "@public": "public",
-    "@": "src/frontend",
-    "@js": "src/frontend/js",
-    "@sass": "src/frontend/sass",
-    "@fonts": "src/frontend/fonts",
-    "@images": "src/frontend/images",
-    "@views": "views",
+  "@public": "public",
+  "@": "src/frontend",
+  "@js": "src/frontend/js",
+  "@sass": "src/frontend/sass",
+  "@fonts": "src/frontend/fonts",
+  "@images": "src/frontend/images",
+  "@views": "views",
 });
 
 /* Configuration */
 mix.webpackConfig({
-    module: {
-        rules: [
-            {
-                test: /\.vue$/,
-                loader: "vue-loader",
-                exclude: /node_modules/,
-            },
-            {
-                test: /\.tsx?$/,
-                loader: "ts-loader",
-                exclude: /node_modules/,
-                options: { appendTsSuffixTo: [/\.vue$/] },
-            },
-        ],
-    },
-    resolve: {
-        extensions: [".js", ".jsx", ".tsx", ".ts", ".json", ".html", ".vue"],
-        modules: [Path.resolve("./src"), Path.resolve("./node_modules")],
-    },
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: "vue-loader",
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader",
+        exclude: /node_modules/,
+        options: { appendTsSuffixTo: [/\.vue$/] },
+      },
+    ],
+  },
+  resolve: {
+    extensions: [".js", ".jsx", ".tsx", ".ts", ".json", ".html", ".vue"],
+    modules: [Path.resolve("src"), Path.resolve("node_modules")],
+  },
 });
 
 /* Prepare */
 mix.setPublicPath("public");
 
 if (!mix.inProduction()) {
-    mix.sourceMaps(true);
+  mix.sourceMaps(true);
 }
 mix.version();
 
