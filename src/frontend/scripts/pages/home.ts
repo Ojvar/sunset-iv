@@ -1,5 +1,6 @@
 "use strict";
 
+import Vue from "vue";
 import App from "../core/app";
 
 /**
@@ -18,7 +19,7 @@ export class MainPage extends App {
      * Init vue
      */
     private init(): void {
-        console.log('lsadkfjas;dlkfjs;l')
+        console.log("Hello from index page");
     }
 }
 
